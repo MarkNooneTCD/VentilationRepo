@@ -1,4 +1,4 @@
-public class Outside implements Component{
+public class Outside implements Updateable{
 
     private Air air;
 
@@ -6,12 +6,17 @@ public class Outside implements Component{
         this.air = outsideAir;
     }
 
-    public void update(Data currentData){
-        //TODO modify outside are here
-    }
-
     public Air getAir(){
         return air;
     }
 
+    /**
+     * Updates the component based on the currentData being passed in
+     *
+     * @param currentData the current data to update from
+     */
+    @Override
+    public void update(Data currentData) {
+        //TODO update the current Air based on the passed in data
+    }
 }

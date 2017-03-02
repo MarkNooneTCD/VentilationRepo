@@ -1,11 +1,8 @@
-/**
-  Components of the simulation that will need updating on any changes that occur
- */
-public interface Component {
+public interface Component{
 
     /**
-     * Updates the component based on the currentData being passed in
-     * @param currentData
+     * Simulate based on the current state of the simulation
      */
-    void update(Data currentData);
+    void simulate();
+
 }
