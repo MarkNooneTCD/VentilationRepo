@@ -1,8 +1,5 @@
 public class Simulation {
 
-    private Data previousData;
-    private Data currentData;
-
     private DataList dataList;
     private Building building;
     private Outside outside;
@@ -15,22 +12,23 @@ public class Simulation {
 
     }
 
-    public void setInitialBuildingValues(){
-        
+    public void setInitialBuildingValues(double volume, Air insideAir){
+        this.building = new Building(volume,insideAir);
+    }
+
+    public void setInitialOutsideConditions(Air outsideAir){
+        this.outside = new Outside(outsideAir);
     }
 
 
 
-    public void run(){
-
-        currentData = dataList.getNext();
-
+    public void simulate(){
 
         while(dataList.hasNext()){
-
-
+            Data currentData = dataList.getNext();
+            building.update(currentData);
+            outside.update(currentData);
         }
-
 
     }
 
