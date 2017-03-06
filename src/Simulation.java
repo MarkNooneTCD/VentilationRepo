@@ -1,5 +1,6 @@
 public class Simulation {
 
+
     public static final String CONFIG_FILE_NAME = "config.json";
     public static final String ENVIRONMENT_CONFIG_FILE_NAME = "environment.csv";
     public static final String SCENARIO_CONFIG_FILE_NAME = "scenarios.json";
@@ -31,12 +32,12 @@ public class Simulation {
                 " hector pascals, Average Wind Speed was " + currentData.getWindSpeedKnots() + " knots.");
 
             previousData = currentData;
-        }
 
+        }
 
     }
 
     public void setInitialBuildingValues(){
-        
+
     }
 }
