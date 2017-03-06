@@ -1,0 +1,26 @@
+{
+	"ElectricityCostPerKilowatt":"0.35",
+	"Thresholds":{
+			"DCVHumidityHigh":"60",
+			"DCVHumidityLow":"40",
+			"DCVTemperatureHigh":"30",
+			"DCVTemperatureLow":"12",
+			"DCVQualityLow":"92",
+			"SCVHumidityHigh":"45",
+			"SCVHumidityLow":"24",
+			"SCVTemperatureHigh":"28",
+			"SCVTemperatureLow":"14",
+			"SCVQualityLow":"88"
+	},
+	"VentilationSystem":{
+		"MaxAirIntake":"0.25",
+		"MaxAirOutake":"0.03125",
+		"CostPerTemperatureChange":"1",
+		"CostPerHumidityChange":"1",
+		"CostPerQualityChange":"1"
+	},
+	"Building": {
+		"U-Value":"0.15",
+		"AirVolume":"192"
+	}
+}

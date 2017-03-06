@@ -1,0 +1,30 @@
+Station Name: Dublin_Airport
+Station Height: 71 M
+Latitude:53.423  ,Longitude: -6.238
+
+
+date:  -  Date and Time (utc)
+rain:  -  Precipitation Amount (mm)
+temp:  -  Air Temperature (C)
+wetb:  -  Wet Bulb Temperature (C)
+dewpt: -  Dew Point Temperature (C)
+rhum:  -  Relative Humidity (%)
+vappr: -  Vapour Pressure (hPa)
+msl:   -  Mean Sea Level Pressure (hPa)
+wdsp:  -  Mean Wind Speed (knot)
+wddir: -  Predominant Wind Direction (degree)
+ww:    -  Synop code for Present Weather
+w:     -  Synop code for Past Weather
+sun:   -  Sunshine duration (hours)
+vis:   -  Visibility (m)
+clht:  -  Cloud height (100's of ft) - 999 if none
+clamt: -  Cloud amount
+ind:   -  Indicator
+
+date,ind,rain,ind,temp,ind,wetb,dewpt,vappr,rhum,msl,ind,wdsp,ind,wddir,ww,w,sun,vis,clht,clamt
+
+01-jan-1987 00:00,0,0.1,0,6.8,0,6.4,5.9,9.3,94,1004.9,2,5,2,130,61,62,0.0,6000,40,8
+01-jan-1987 01:00,0,1.0,0,6.5,0,5.9,5.2,8.8,91,1004.3,2,9,2,150,61,66,0.0,8000,35,8
+01-jan-1987 02:00,0,0.4,0,6.3,0,5.9,5.4,9.0,94,1002.6,2,11,2,130,61,66,0.0,12000,35,8
+01-jan-1987 03:00,2,0.0,0,6.7,0,6.2,5.6,9.1,93,1001.8,2,14,2,120,61,66,0.0,12000,35,8
+01-jan-1987 04:00,0,0.2,0,7.0,0,6.5,5.9,9.3,93,1000.6,2,16,2,120,58,66,0.0,12000,16,8
