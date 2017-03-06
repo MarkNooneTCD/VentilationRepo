@@ -1,6 +1,6 @@
 import java.util.List;
 
-public abstract class VentilationSystem implements Component{
+public abstract class VentilationSystem{
 
     /*
         Things all forms of ventilation system need
@@ -14,9 +14,6 @@ public abstract class VentilationSystem implements Component{
     //Other parts of the system all Ventilation Systems need
     private Outside outside;
     private Building building;
-
-    //Control units that manage different aspects of the climate in the building
-    private List<ControlUnit> controlUnits;
 
     //Constructor
     public VentilationSystem(Builder b){

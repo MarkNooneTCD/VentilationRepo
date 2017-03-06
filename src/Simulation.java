@@ -23,7 +23,7 @@ public class Simulation {
 //        scenarioParser = new ScenarioParser(SCENARIO_CONFIG_FILE_NAME);
 
         while(environmentParser.hasData()){
-            currentData = environmentParser.getDataAt(102869);
+            currentData = environmentParser.getData();
 
             System.out.println("Date: " + currentData.getDate() + ", Time: " + currentData.getTime() + ", Date and Time string: " + currentData.getDateInString() +
                 ", Rain (mm): " + currentData.getRainInMilimeters() + ", Temperature was " + currentData.getTemperatureCelcius() +

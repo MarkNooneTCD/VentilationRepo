@@ -1,4 +1,4 @@
-public class Outside implements Updateable{
+public class Outside {
 
     private Air air;
 
@@ -15,7 +15,6 @@ public class Outside implements Updateable{
      *
      * @param currentData the current data to update from
      */
-    @Override
     public void update(Data currentData) {
         //TODO update the current Air based on the passed in data
     }

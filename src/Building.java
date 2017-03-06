@@ -1,4 +1,4 @@
-public class Building implements Updateable, Component{
+public class Building{
 
     private double volume;
     private Air air;
@@ -17,7 +17,6 @@ public class Building implements Updateable, Component{
     /**
      * Simulate based on the current state of the simulation
      */
-    @Override
     public void simulate() {
         //TODO simulate any changes that occur such as heat transfer through the walls
     }
@@ -27,7 +26,6 @@ public class Building implements Updateable, Component{
      *
      * @param currentData the current data to update from
      */
-    @Override
     public void update(Data currentData) {
         //TODO change the value of internal air based on passed in data
     }
