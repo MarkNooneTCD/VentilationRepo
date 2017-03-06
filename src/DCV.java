@@ -3,6 +3,8 @@ public class DCV extends VentilationSystem{
     private double demandHumidityThreshold;
     private double demandTemperatureThreshold;
 
+    private double totalEnergyUsed;
+
     private DCV(Builder b){
         super(b);
         this.demandHumidityThreshold = b.demandHumidityThreshold;
@@ -22,6 +24,9 @@ public class DCV extends VentilationSystem{
         return new Builder();
     }
 
+    /**
+     * Builder class to help construct a DCV instance without having a large constructor
+     */
     public static class Builder extends VentilationSystem.Builder{
 
         double demandHumidityThreshold;
