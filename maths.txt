@@ -1,0 +1,38 @@
+saturated vapour pressure:
+
+    SVP = Saturated Water Pressure (hPA)
+    T = Temperature (C)
+
+    SVP = 6.1078 * 10^( 7.5T / ( T + 237.3 ) )
+
+density of humid air:
+
+    d = density (kg/m^3)
+    P = absolute pressure (Pa)
+    p[v] = vapour pressure (Pa)
+    M[d] = Molar Mass Dry Air
+    M[v] = Molar Mass Water Vapour
+    R = Universal Gas Constant
+    T = temperature (K)
+
+    d = (P*M[d] + p[v] * (M[v] - M[d])) / (R * T)
+
+mass of humid air:
+
+    m = mass (kg)
+    d = density(kg/m^3)
+    v = volume (m^3)
+
+    m = dv
+
+humidity ratio:
+
+    By Vapour Pressure:
+
+        x = humidity ratio (water/dryair)
+        p[w] = partial water vapour pressure (Pa)
+        p[a] = absolute pressure (Pa)
+
+        x = 0.62198 * p[w] / (p[a] - p[w)
+
+      By masses

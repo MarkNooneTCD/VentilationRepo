@@ -8,11 +8,6 @@ public class Building{
         this.volume = volume;
     }
 
-    public Building(double volume, double initialHumidity, double initialTemperature, double initialAirQuality){
-        this(volume, new Air(initialHumidity,initialTemperature,initialAirQuality));
-    }
-
-
 
     /**
      * Simulate based on the current state of the simulation

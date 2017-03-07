@@ -97,7 +97,7 @@ public class EnvironmentParser {
         return environmentData.get(i);
     }
 
-    public boolean hasDataAt(int i){ return environmentData.get(i) == null;}
+    public boolean hasDataAt(int i){ return environmentData.get(i) != null;}
 
     public boolean hasData(){
         return dataArrayIndex < environmentData.size();
