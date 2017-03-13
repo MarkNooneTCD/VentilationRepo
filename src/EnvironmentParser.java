@@ -54,9 +54,6 @@ public class EnvironmentParser {
                 for(int n =0; n<60; n++){
 //                    System.out.println("The time is " + time);
                     ArrayList<Pollutant> tmp = scenarioParser.hasPollutantsAtTime(time);
-                    if(tmp.size() > 0){
-                        System.out.println("Pollutants total is: " + tmp.size());
-                    }
                     Data d = new Data(line[dateColumn], line[rainInMilimetersColumn], line[temperatureCelciusColumn], line[wetBulbTemperatureCelciusColumn],
                             line[dewPointTemperatureCelciusColumn], line[relativeHumidityPercentageColumn], line[vapourPressureHPAColumn], line[windSpeedKnotsColumn], tmp);
                     environmentData.add(d);

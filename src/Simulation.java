@@ -6,6 +6,7 @@ public class Simulation {
     public static final String CONFIG_FILE_NAME = "config.json";
     public static final String ENVIRONMENT_CONFIG_FILE_NAME = "environment.csv";
     public static final String SCENARIO_CONFIG_FILE_NAME = "scenarios.json";
+    public static final String MOSIER_CONFIG_FILE_NAME = "mosierTable.csv";
 
     private static Data previousData;
     private static Data currentData;
@@ -15,6 +16,7 @@ public class Simulation {
     private static EnvironmentParser environmentParser;
     private static ConfigParser configParser;
     private static ScenarioParser scenarioParser;
+    private static Mosierr mosier;
 
     public static void main(String args[]){
 
@@ -24,6 +26,7 @@ public class Simulation {
         configParser = new ConfigParser(CONFIG_FILE_NAME, false);
         scenarioParser = new ScenarioParser(SCENARIO_CONFIG_FILE_NAME);
         environmentParser = new EnvironmentParser(ENVIRONMENT_CONFIG_FILE_NAME, false, scenarioParser, configParser);
+        mosier = new Mosierr(MOSIER_CONFIG_FILE_NAME);
 
 
         while(environmentParser.hasData()){
