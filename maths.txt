@@ -36,3 +36,51 @@ humidity ratio:
         x = 0.62198 * p[w] / (p[a] - p[w)
 
       By masses
+
+
+Pollutants:
+
+Pollutants are typically measured in PPM (Parts per Million).
+
+Carbon Dioxide - C02:
+The average CO2 level in the atmosphere is ~400ppm.
+When a human breaths in they inhale 0.0005M^3 of air of which 400ppm is CO2. When they exhale, C02 levels
+rise to 38,000-48,000ppm in exhaled breathe as oxygen is converted to C02 in the respiratory process.
+In 1 hour, a human would breathe .48m^3 of air.
+The various level of C02 according to https://ehp.niehs.nih.gov/wp-content/uploads/120/12/ehp.1104789.pdf:
+5,000PPM is the recommended indoor limit for a building where occupants spends 8 hours a day in.
+20,000PPM is when humans would have to breathe noticeably more heavily to account for the increase in C02.
+40,000PPM is when respiration would increase dramatically.
+100,000PPM would lead to visual/performance impairment and even unconsciousness.
+250,000PPM would lead to death.
+
+
+Carbon Monoxide - CO:
+The average level of CO in the atmospere is minimal, roughly .1PPM. It doesn't occur naturally
+other than volcanic activity.
+In homes, the average level of Carbon Monoxide ranges from 0.5 - 5PPM while the safetly levels are as follows:
+0-9PPM Safe
+10-24PPM possible health effects with long term exposure.
+25PPM max level for a building where people spend 8 hours a day.
+50PPM max for any period of time.
+100PPM headache after 1-2 hours
+400PPM headache nausea and death after 3 hours
+1600PPM death within 1 hour
+
+Humans produce a very small amount of CO in exhaled breath, usually about 1-3PPM.
+Lots of household appliances produces CO, especially those that have heating/cooking elements. The amount the
+applicances varies too much so it would probably be better to just let the user state a rate of production.
+
+
+Organic Compounds:
+Indoors, most Volatile Organic compounds come from new furnishings, wall painting and office equipment such as printers,
+personal care products, smoking etc.
+There are between 50-300 different VOCs indoors so we would implement them as a collective.
+<1PPM will not result in any health effects
+1-10ppm may produce some minor health effects and complaints
+>10ppm will produce more serious effects.
+For VOCs, it is probably best to allow the user to specify the growth levels. For the senarios bit its hard to know
+as humans don't produce VOCs so it would probabyl be best to have a fixed rate of growth.
+
+
+
