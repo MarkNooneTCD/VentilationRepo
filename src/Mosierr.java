@@ -36,4 +36,19 @@ public class Mosierr {
             e.printStackTrace();
         }
     }
+
+    public MosierRecord mosierLookup(double rh, double dbt){
+        for(MosierRecord m: records){
+            if(m.getRelativeHumidity() == rh){
+                if(m.getDryBulbTemperature() == dbt){
+                    return m;
+                } else {
+                    continue;
+                }
+            } else {
+                continue;
+            }
+        }
+        return null;
+    }
 }
