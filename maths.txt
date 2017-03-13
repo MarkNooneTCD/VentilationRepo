@@ -12,7 +12,7 @@ density of humid air:
     p[v] = vapour pressure (Pa)
     M[d] = Molar Mass Dry Air
     M[v] = Molar Mass Water Vapour
-    R = Universal Gas Constant
+    R = Universal Equation Constant
     T = temperature (K)
 
     d = (P*M[d] + p[v] * (M[v] - M[d])) / (R * T)

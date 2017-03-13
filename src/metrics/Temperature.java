@@ -8,6 +8,24 @@ public class Temperature {
 
     public static final Unit SI_UNIT = Unit.KELVIN;
 
+    private double value;
+
+    public Temperature(double value, Unit unit){
+        this.value = asSIunit(value, unit);
+    }
+
+    public double kelvin(){
+        return asSpecifiedunit(this.value, Unit.KELVIN);
+    }
+
+    public double celsius(){
+        return asSpecifiedunit(this.value, Unit.CELSIUS);
+    }
+
+    public double fahrenheit(){
+        return asSpecifiedunit(this.value, Unit.FAHRENHEIT);
+    }
+
     public static double convert(double value, Unit from ,Unit to){
         return asSpecifiedunit(asSIunit(value,from), to);
     }

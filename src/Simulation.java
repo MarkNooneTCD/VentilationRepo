@@ -16,8 +16,7 @@ public class Simulation {
     private static ScenarioParser scenarioParser;
 
     public static void main(String args[]){
-
-            Air a = new Air(30,101325).partialVapourPressure(4234);
+            Air a = new Air(25,101325).partialVapourPressure(4234);
             System.out.print(String.format("%f",a.getHumidityRatio()));
 
 //        configParser = new ConfigParser(CONFIG_FILE_NAME, false);

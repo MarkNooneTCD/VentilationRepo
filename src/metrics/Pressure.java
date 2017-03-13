@@ -9,6 +9,24 @@ public class Pressure {
     public static final Unit SI_UNIT = Unit.PA;
     public static final double STANDARD_ATMOSPHERIC_PRESSURE = 101325;
 
+    private double value;
+
+    public Pressure(double value, Unit unit){
+        this.value = asSIunit(value, unit);
+    }
+
+    public double pa(){
+        return asSpecifiedUnit(value, Unit.PA);
+    }
+
+    public double hPA(){
+        return asSpecifiedUnit(value, Unit.HPA);
+    }
+
+    public double kPA(){
+        return asSpecifiedUnit(value, Unit.KPA);
+    }
+
     public static double convert(double value, Unit from, Unit to){
         return asSpecifiedUnit(asSIunit(value,from), to);
     }
