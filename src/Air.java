@@ -25,8 +25,8 @@ public class Air {
 
 
     public Air(double temperature, double pressure){
-        this.temperature = temperature;
-        this.absolutePressure = pressure;
+//        this.temperature = temperature;
+//        this.absolutePressure = pressure;
     }
 
 }

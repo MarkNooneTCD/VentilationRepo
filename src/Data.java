@@ -1,4 +1,5 @@
 import java.time.*;
+import java.util.ArrayList;
 
 public class Data {
     private LocalDate date;
@@ -11,10 +12,11 @@ public class Data {
     private double relativeHumidityPercentage;
     private double vapourPressureHPA;
     private double windSpeedKnots;
+    private ArrayList<Pollutant> pollutants;
 
     Data(String date, String rain, String temperature, String wetTemp, String dewTemp, String
-         relative, String vapour, String wind){
-
+         relative, String vapour, String wind, ArrayList<Pollutant> p){
+        pollutants = p;
         this.date = getDateFromDateTime(date);
         this.time = getTimeFromDateTime(date);
         this.dateInString = date;
@@ -28,7 +30,7 @@ public class Data {
 
     }
 
-    private LocalDate getDateFromDateTime(String date){
+    public static LocalDate getDateFromDateTime(String date){
         int day= -1, month= -1, year= -1;
         String[] s = date.split(" ");
         String[] splitDate = s[0].split("-");
@@ -75,7 +77,7 @@ public class Data {
         return LocalDate.of(year, month, day);
     }
 
-    private LocalTime getTimeFromDateTime(String date){
+    public static LocalTime getTimeFromDateTime(String date){
         String[] s = date.split(" ");
         return LocalTime.parse(s[1]);
     }
@@ -120,5 +122,9 @@ public class Data {
 
     public double getWindSpeedKnots() {
         return windSpeedKnots;
+    }
+
+    public ArrayList<Pollutant> getPollutants() {
+        return pollutants;
     }
 }

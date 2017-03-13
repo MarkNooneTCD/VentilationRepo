@@ -2,6 +2,8 @@ import com.opencsv.CSVReader;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,7 +29,7 @@ public class EnvironmentParser {
     private ArrayList<Data> environmentData = new ArrayList<Data>();
     private boolean printCSV = false;
 
-    EnvironmentParser(String baseFilePath, boolean printEntries){
+    EnvironmentParser(String baseFilePath, boolean printEntries, ScenarioParser scenarioParser, ConfigParser configParser){
         this.baseFilePath = baseFilePath;
         printCSV = printEntries;
         int counter =0;
@@ -38,7 +40,8 @@ public class EnvironmentParser {
             reader = new CSVReader(new FileReader(baseFilePath));
             List<String[]> csv = reader.readAll();
             System.out.println("Beginning environment parse...");
-
+            LocalTime time = configParser.getStartTime();
+            LocalDate date = configParser.getStartDate();
             for(int i =0; i < csv.size(); i++) {
 
                 String[] line = interpolateLine(csv, i);
@@ -48,12 +51,26 @@ public class EnvironmentParser {
                             " celcius, Relative Humidity was " + line[relativeHumidityPercentageColumn] + " percent, Vapour Pressure was " + line[vapourPressureHPAColumn] +
                             " hector pascals, Average Wind Speed was " + line[windSpeedKnotsColumn] + " knots.");
                 }
-                Data d = new Data(line[dateColumn], line[rainInMilimetersColumn], line[temperatureCelciusColumn], line[wetBulbTemperatureCelciusColumn],
-                        line[dewPointTemperatureCelciusColumn], line[relativeHumidityPercentageColumn], line[vapourPressureHPAColumn], line[windSpeedKnotsColumn]);
-                environmentData.add(d);
-
+                for(int n =0; n<60; n++){
+//                    System.out.println("The time is " + time);
+                    ArrayList<Pollutant> tmp = scenarioParser.hasPollutantsAtTime(time);
+                    if(tmp.size() > 0){
+                        System.out.println("Pollutants total is: " + tmp.size());
+                    }
+                    Data d = new Data(line[dateColumn], line[rainInMilimetersColumn], line[temperatureCelciusColumn], line[wetBulbTemperatureCelciusColumn],
+                            line[dewPointTemperatureCelciusColumn], line[relativeHumidityPercentageColumn], line[vapourPressureHPAColumn], line[windSpeedKnotsColumn], tmp);
+                    environmentData.add(d);
+                    time = time.plusMinutes(1);
+//                    System.out.println(date + " " + time);
+                }
+                time = time.plusMinutes(1);
+                if(time.compareTo(LocalTime.of(00, 00)) == 0){
+                    date = date.plusDays(1);
+                }
+//                System.out.println(date + " " + time);
             }
             System.out.println("Finished environment parse.");
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -102,4 +119,6 @@ public class EnvironmentParser {
     public boolean hasData(){
         return dataArrayIndex < environmentData.size();
     }
+
+
 }

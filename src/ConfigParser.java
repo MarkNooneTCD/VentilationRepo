@@ -6,6 +6,8 @@ import org.json.simple.parser.ParseException;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 /**
  * Created by marcus on 04/03/2017.
@@ -30,6 +32,8 @@ public class ConfigParser {
     private double VentCostPerQualityChange;
     private double BuildingUValue;
     private double BuildingAirVolume;
+    private LocalTime startTime;
+    private LocalDate startDate;
 
     private JSONObject configObject;
     private String baseFilePath;
@@ -178,6 +182,18 @@ public class ConfigParser {
             System.out.println("Electricity Cost is " + ElectricityCostPerKilowatt + " euros per kilowatt.");
         }
 
+        if(!configObject.containsKey("DataStartDateAndTime")){
+            throw new ConfigParserException("Data start time cannot be found.\n Please check configuration for value and spelling. \n " +
+                    "Looking for: 'DataStartDateAndTime'.");
+        } else {
+            String s = (String) configObject.get("DataStartDateAndTime");
+            startTime = Data.getTimeFromDateTime(s);
+            startDate = Data.getDateFromDateTime(s);
+            if(printStats)
+                System.out.println("Start Date is " + startDate + ".");
+                System.out.println("Start Time is " + startTime + ".");
+        }
+
         isParsed = true;
     }
 
@@ -309,4 +325,17 @@ public class ConfigParser {
         return BuildingAirVolume;
     }
 
+    public LocalTime getStartTime() {
+        if(!isParsed){
+            throw new NullPointerException("Config Parameters not yet set");
+        }
+        return startTime;
+    }
+
+    public LocalDate getStartDate() {
+        if(!isParsed){
+            throw new NullPointerException("Config Parameters not yet set");
+        }
+        return startDate;
+    }
 }
