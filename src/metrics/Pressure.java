@@ -34,8 +34,8 @@ public class Pressure {
     private static double asSIunit(double value, Unit unit){
         switch (unit){
             case PA: return value;
-            case KPA: return value/1000.0;
-            case HPA: return value/100.0;
+            case KPA: return value*1000.0;
+            case HPA: return value*100.0;
         }
         throw new IllegalArgumentException("Invalid unit type for Pressure");
     }
@@ -43,8 +43,8 @@ public class Pressure {
     private static double asSpecifiedUnit(double value, Unit unit){
         switch (unit){
             case PA: return value;
-            case KPA: return value*1000.0;
-            case HPA: return value*100.0;
+            case KPA: return value/1000.0;
+            case HPA: return value/100.0;
         }
         throw new IllegalArgumentException("Invalid unit type for Pressure");
     }
