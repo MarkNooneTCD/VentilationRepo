@@ -1,5 +1,6 @@
 {
 	"ElectricityCostPerKilowatt":"0.35",
+	"DataStartDateAndTime":"01-jan-1987 00:00",
 	"Thresholds":{
 			"DCVHumidityHigh":"60",
 			"DCVHumidityLow":"40",
