@@ -3,7 +3,7 @@ package metrics;
 public class Pressure {
 
     public enum Unit{
-        PA, KPA, HPA
+        PA, KPA, HPA, MILLI_BAR
     }
 
     public static final Unit SI_UNIT = Unit.PA;
@@ -27,6 +27,9 @@ public class Pressure {
         return asSpecifiedUnit(value, Unit.KPA);
     }
 
+    public double milliBar(){ return asSpecifiedUnit(value, Unit.MILLI_BAR);
+    }
+
     public static double convert(double value, Unit from, Unit to){
         return asSpecifiedUnit(asSIunit(value,from), to);
     }
@@ -36,6 +39,7 @@ public class Pressure {
             case PA: return value;
             case KPA: return value*1000.0;
             case HPA: return value*100.0;
+            case MILLI_BAR: return value*100.0;
         }
         throw new IllegalArgumentException("Invalid unit type for Pressure");
     }
@@ -45,6 +49,7 @@ public class Pressure {
             case PA: return value;
             case KPA: return value/1000.0;
             case HPA: return value/100.0;
+            case MILLI_BAR: return value/100.0;
         }
         throw new IllegalArgumentException("Invalid unit type for Pressure");
     }
