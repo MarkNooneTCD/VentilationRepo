@@ -22,9 +22,8 @@ public class EnvironmentParser {
     private final int vapourPressureHPAColumn = 8;
     private final int windSpeedKnotsColumn = 12;
 
-    private CSVReader reader;
-    private String baseFilePath = "";
-    private int dataArrayIndex =0;
+    private String baseFilePath;
+    private int dataArrayIndex = 0;
 
     private ArrayList<Data> environmentData = new ArrayList<Data>();
     private boolean printCSV = false;
@@ -32,12 +31,9 @@ public class EnvironmentParser {
     EnvironmentParser(String baseFilePath, boolean printEntries, ScenarioParser scenarioParser, ConfigParser configParser){
         this.baseFilePath = baseFilePath;
         printCSV = printEntries;
-        int counter =0;
 
-        CSVReader reader = null;
-        try {
+        try (CSVReader reader = new CSVReader(new FileReader(baseFilePath))){
             System.out.println("Reading CSV ...");
-            reader = new CSVReader(new FileReader(baseFilePath));
             List<String[]> csv = reader.readAll();
             System.out.println("Beginning environment parse...");
             LocalTime time = configParser.getStartTime();
@@ -52,19 +48,16 @@ public class EnvironmentParser {
                             " hector pascals, Average Wind Speed was " + line[windSpeedKnotsColumn] + " knots.");
                 }
                 for(int n =0; n<60; n++){
-//                    System.out.println("The time is " + time);
-                    ArrayList<Pollutant> tmp = scenarioParser.hasPollutantsAtTime(time);
+                    ArrayList<Pollutant> tmp = null;//scenarioParser.hasPollutantsAtTime(time);
                     Data d = new Data(line[dateColumn], line[rainInMilimetersColumn], line[temperatureCelciusColumn], line[wetBulbTemperatureCelciusColumn],
                             line[dewPointTemperatureCelciusColumn], line[relativeHumidityPercentageColumn], line[vapourPressureHPAColumn], line[windSpeedKnotsColumn], tmp);
                     environmentData.add(d);
                     time = time.plusMinutes(1);
-//                    System.out.println(date + " " + time);
                 }
                 time = time.plusMinutes(1);
                 if(time.compareTo(LocalTime.of(00, 00)) == 0){
                     date = date.plusDays(1);
                 }
-//                System.out.println(date + " " + time);
             }
             System.out.println("Finished environment parse.");
 
@@ -77,20 +70,16 @@ public class EnvironmentParser {
         String[] goodLine = l.get(index);
         for(int i=0; i<goodLine.length; i++){
             if(goodLine[i].equals(" ") || goodLine[i].equals("") || goodLine[i] == null){
-                System.out.println("Ran");
+                System.out.println("Interpolated");
                 Double x, y;
                 try{
                     x = Double.parseDouble(l.get(index-1)[i]);
-                } catch(NullPointerException ex) {
-                    x=0.0;
-                } catch (NumberFormatException ex) {
+                } catch(NullPointerException | NumberFormatException ex) {
                     x=0.0;
                 }
                 try{
                     y = Double.parseDouble(l.get(index+1)[i]);
-                } catch(NullPointerException ex) {
-                    y=0.0;
-                } catch (NumberFormatException ex) {
+                } catch(NullPointerException | NumberFormatException ex) {
                     y=0.0;
                 }
                 goodLine[i] = "" + (x+y/2);
@@ -100,11 +89,7 @@ public class EnvironmentParser {
     }
 
     public Data getData(){
-        if(hasData())
-           return environmentData.get(dataArrayIndex++);
-        else {
-            return null;
-        }
+        return hasData()? environmentData.get(dataArrayIndex++) : null;
     }
 
     public Data getDataAt(int i){

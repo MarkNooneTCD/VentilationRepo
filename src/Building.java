@@ -1,26 +1,22 @@
+import metrics.Temperature;
+
 public class Building{
 
     private double volume;
     private Air air;
 
-    public Building(double volume, Air insideAir){
-        this.air = insideAir;
+    public Building(double volume, Temperature temperature, double relativeHumidity){
+        this.air = new Air(temperature, relativeHumidity, volume);
         this.volume = volume;
     }
 
 
-    /**
-     * Simulate based on the current state of the simulation
-     */
+
     public void simulate() {
         //TODO simulate any changes that occur such as heat transfer through the walls
     }
 
-    /**
-     * Updates the component based on the currentData being passed in
-     *
-     * @param currentData the current data to update from
-     */
+
     public void update(Data currentData) {
         //TODO change the value of internal air based on passed in data
     }

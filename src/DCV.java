@@ -19,10 +19,6 @@ public class DCV extends VentilationSystem{
         //////////////////////////
     }
 
-    @Override
-    public Builder create() {
-        return new Builder();
-    }
 
     /**
      * Builder class to help construct a DCV instance without having a large constructor

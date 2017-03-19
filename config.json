@@ -2,25 +2,27 @@
 	"ElectricityCostPerKilowatt":"0.35",
 	"DataStartDateAndTime":"01-jan-1987 00:00",
 	"Thresholds":{
-			"DCVHumidityHigh":"60",
-			"DCVHumidityLow":"40",
+			"DCVHumidityHigh":".6",
+			"DCVHumidityLow":".4",
 			"DCVTemperatureHigh":"30",
 			"DCVTemperatureLow":"12",
 			"DCVQualityLow":"92",
-			"SCVHumidityHigh":"45",
-			"SCVHumidityLow":"24",
+			"SCVHumidityHigh":".6",
+			"SCVHumidityLow":".4",
 			"SCVTemperatureHigh":"28",
 			"SCVTemperatureLow":"14",
 			"SCVQualityLow":"88"
 	},
 	"VentilationSystem":{
-		"MaxAirIntake":"0.25",
+		"MaxAirIntake":"0.6",
 		"MaxAirOutake":"0.03125",
 		"CostPerTemperatureChange":"1",
 		"CostPerHumidityChange":"1",
 		"CostPerQualityChange":"1"
 	},
 	"Building": {
+		"Temperature":"22",
+		"HumidityRatio":".5",
 		"U-Value":"0.15",
 		"AirVolume":"192"
 	}

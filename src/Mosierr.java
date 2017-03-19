@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by marcus on 13/03/2017.
- */
 public class Mosierr {
+
+    private static Mosierr instance;
+
     String baseFilePath;
     ArrayList<MosierRecord> records;
 
@@ -35,6 +35,7 @@ public class Mosierr {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        Mosierr.instance = this;
     }
 
     public MosierRecord mosierLookup(double rh, double dbt){
@@ -51,4 +52,5 @@ public class Mosierr {
         }
         return null;
     }
+
 }

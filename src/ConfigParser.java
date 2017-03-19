@@ -1,17 +1,12 @@
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-/**
- * Created by marcus on 04/03/2017.
- */
 public class ConfigParser {
 
     private double ElectricityCostPerKilowatt;
@@ -32,6 +27,8 @@ public class ConfigParser {
     private double VentCostPerQualityChange;
     private double BuildingUValue;
     private double BuildingAirVolume;
+    private double BuildingTemperature;
+    private double BuildingHumidityRatio;
     private LocalTime startTime;
     private LocalDate startDate;
 
@@ -54,15 +51,9 @@ public class ConfigParser {
             configObject = (JSONObject) jsonParser.parse(reader);
             parse();
 
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
         } catch (IOException ex) {
             ex.printStackTrace();
-        } catch (ParseException ex) {
-            ex.printStackTrace();
-        } catch (NullPointerException ex) {
-            ex.printStackTrace();
-        } catch(ConfigParserException ex) {
+        } catch (ConfigParserException | ParseException ex){
             ex.printStackTrace();
         }
 
@@ -81,36 +72,39 @@ public class ConfigParser {
         JSONObject building;
         JSONObject thresholds;
         JSONObject ventilationSystem;
-        if(configObject.containsKey("Thresholds") && configObject.containsKey("VentilationSystem") && configObject.containsKey("Building")){
+        if(objectHasKeys(configObject, "Thresholds", "VentilationSystem", "Building")){
             building = (JSONObject) configObject.get("Building");
             thresholds = (JSONObject) configObject.get("Thresholds");
             ventilationSystem = (JSONObject) configObject.get("VentilationSystem");
         } else {
-            throw new ConfigParserException("Building, Threshold or Ventilation System objects not found. \n " +
-                    "Please check config and any spelling.");
+            throw new ConfigParserException("Building, Threshold or Ventilation System");
         }
 
-        if(building == null || !(building.containsKey("AirVolume") && building.containsKey("U-Value"))){
-            throw new ConfigParserException("Building Object does not meet the requirements.\n Please read documentation fo rmore information.");
+        if(building == null || !objectHasKeys(building, "AirVolume", "U-Value", "HumidityRatio", "Temperature")){
+            throw new ConfigParserException("Building Object");
         } else {
             String s = (String) building.get("AirVolume");
             BuildingAirVolume = Double.parseDouble(s);
             s = (String) building.get("U-Value");
             BuildingUValue = Double.parseDouble(s);
+            s = (String) building.get("Temperature");
+            BuildingTemperature = Double.parseDouble(s);
+            s = (String) building.get("HumidityRatio");
+            BuildingHumidityRatio = Double.parseDouble(s);
 
             if(printStats) {
                 System.out.println("Building Air Volume is " + BuildingAirVolume + " meters cubed.");
                 System.out.println("Building U-Value is " + BuildingUValue + " watts per meters squared.");
+                System.out.println("Building Temperature is " + BuildingTemperature + " degrees Celsius");
+                System.out.println("Building Humidity Ratio is " + BuildingHumidityRatio);
             }
         }
 
 
 
-        if(thresholds == null || !(thresholds.containsKey("DCVHumidityHigh") && thresholds.containsKey("DCVHumidityLow") &&
-                thresholds.containsKey("DCVTemperatureHigh") && thresholds.containsKey("DCVTemperatureLow") && thresholds.containsKey("DCVQualityLow") &&
-                thresholds.containsKey("SCVHumidityHigh") && thresholds.containsKey("SCVHumidityLow") && thresholds.containsKey("SCVTemperatureLow") &&
-                thresholds.containsKey("SCVTemperatureHigh") && thresholds.containsKey("SCVQualityLow"))){
-            throw new ConfigParserException("Threshold Object does not meet the requirements.\n Please read documentation for more information.");
+        if(thresholds == null || !objectHasKeys(thresholds, "DCVHumidityHigh", "DCVHumidityLow", "DCVTemperatureHigh", "DCVTemperatureLow","DCVQualityLow",
+                "SCVHumidityHigh","SCVHumidityLow", "SCVTemperatureLow","SCVTemperatureHigh","SCVQualityLow")){
+            throw new ConfigParserException("Threshold Object");
         } else {
             String s = (String) thresholds.get("DCVHumidityHigh");
             DCVHumidityThresholdHigh = Double.parseDouble(s);
@@ -148,10 +142,9 @@ public class ConfigParser {
             }
         }
 
-        if(ventilationSystem == null || !(ventilationSystem.containsKey("MaxAirIntake") && ventilationSystem.containsKey("MaxAirOutake") &&
-                ventilationSystem.containsKey("CostPerTemperatureChange") && ventilationSystem.containsKey("CostPerHumidityChange") &&
-                ventilationSystem.containsKey("CostPerQualityChange"))){
-            throw new ConfigParserException("Ventilation Object does not meet the requirements. \n Please read documentation fo rmore information.");
+        if(ventilationSystem == null || !objectHasKeys(ventilationSystem, "MaxAirIntake", "MaxAirOutake",
+                "CostPerTemperatureChange", "CostPerHumidityChange", "CostPerQualityChange")){
+            throw new ConfigParserException("Ventilation Object");
         } else {
             String s = (String) ventilationSystem.get("MaxAirIntake");
             VentMaxAirIntake = Double.parseDouble(s);
@@ -195,6 +188,13 @@ public class ConfigParser {
         }
 
         isParsed = true;
+    }
+
+    private static boolean objectHasKeys(JSONObject object, String... keys){
+        for(String key : keys)
+            if(!object.containsKey(key))
+                return false;
+        return true;
     }
 
     //************************** CONFIG GETTERS ************************/
@@ -337,5 +337,19 @@ public class ConfigParser {
             throw new NullPointerException("Config Parameters not yet set");
         }
         return startDate;
+    }
+
+    public double getBuildingTemperature() {
+        if(!isParsed){
+            throw new NullPointerException("Config Parameters not yet set");
+        }
+        return BuildingTemperature;
+    }
+
+    public double getBuildingHumidityRatio() {
+        if(!isParsed){
+            throw new NullPointerException("Config Parameters not yet set");
+        }
+        return BuildingHumidityRatio;
     }
 }

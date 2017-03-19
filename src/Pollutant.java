@@ -1,8 +1,5 @@
 import java.time.LocalTime;
 
-/**
- * Created by marcus on 13/03/2017.
- */
 public class Pollutant {
     private String pollutant;
     private String source;

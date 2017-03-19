@@ -22,10 +22,6 @@ public class SCV extends VentilationSystem{
         //////////////////////////
     }
 
-    @Override
-    public Builder create() {
-        return new Builder();
-    }
 
     public static class Builder extends VentilationSystem.Builder{
 

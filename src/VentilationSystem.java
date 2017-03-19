@@ -27,7 +27,13 @@ public abstract class VentilationSystem{
     }
 
     //
-    public abstract Builder create();
+    public static Builder createSCV(){
+        return new SCV.Builder();
+    }
+
+    public static DCV.Builder createDCV(){
+        return new DCV.Builder();
+    }
 
 
     public abstract void simulate();
