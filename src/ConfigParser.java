@@ -5,6 +5,7 @@ import org.json.simple.parser.ParseException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class ConfigParser {
@@ -29,8 +30,7 @@ public class ConfigParser {
     private double BuildingAirVolume;
     private double BuildingTemperature;
     private double BuildingHumidityRatio;
-    private LocalTime startTime;
-    private LocalDate startDate;
+    private LocalDateTime startDateTime;
 
     private JSONObject configObject;
     private String baseFilePath;
@@ -180,17 +180,15 @@ public class ConfigParser {
                     "Looking for: 'DataStartDateAndTime'.");
         } else {
             String s = (String) configObject.get("DataStartDateAndTime");
-            startTime = Data.getTimeFromDateTime(s);
-            startDate = Data.getDateFromDateTime(s);
+            startDateTime = Data.getDateTimeFromString(s);
             if(printStats)
-                System.out.println("Start Date is " + startDate + ".");
-                System.out.println("Start Time is " + startTime + ".");
+                System.out.println("Start DateTime is " + startDateTime + ".");
         }
 
         isParsed = true;
     }
 
-    private static boolean objectHasKeys(JSONObject object, String... keys){
+    public static boolean objectHasKeys(JSONObject object, String... keys){
         for(String key : keys)
             if(!object.containsKey(key))
                 return false;
@@ -325,18 +323,11 @@ public class ConfigParser {
         return BuildingAirVolume;
     }
 
-    public LocalTime getStartTime() {
+    public LocalDateTime getStartDateTime() {
         if(!isParsed){
             throw new NullPointerException("Config Parameters not yet set");
         }
-        return startTime;
-    }
-
-    public LocalDate getStartDate() {
-        if(!isParsed){
-            throw new NullPointerException("Config Parameters not yet set");
-        }
-        return startDate;
+        return startDateTime;
     }
 
     public double getBuildingTemperature() {

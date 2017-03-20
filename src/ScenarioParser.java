@@ -16,20 +16,20 @@ public class ScenarioParser {
     private String baseFilePath;
     private boolean isParsed = false;
     private boolean printStats = false;
-    private ArrayList<Pollutant> pollutants;
+    private ArrayList<Event> events;
 
-    ScenarioParser(String baseFilePath){
+    ScenarioParser(String baseFilePath, DataList dataList){
         this.baseFilePath = baseFilePath;
         try {
             System.out.println("Loading Scenario Data .......");
             FileReader reader = new FileReader(baseFilePath);
             JSONParser jsonParser = new JSONParser();
-            pollutants = new ArrayList<Pollutant>();
+            events = new ArrayList<Event>();
 
             // Validates the data assuring that all necessary data is present
             // This method will throw an exception if data fails any test.
             scenarioObject = (JSONArray) jsonParser.parse(reader);
-            parse(scenarioObject);
+            parse(scenarioObject, dataList);
 
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
@@ -44,25 +44,32 @@ public class ScenarioParser {
         }
     }
 
-    private void parse(JSONArray o) throws ScenarioParserException{
+    private void parse(JSONArray o, DataList dataList) throws ScenarioParserException{
         for(int i =0; i < o.size(); i++){
             JSONObject object = (JSONObject) o.get(i);
-            if(object.containsKey("Pollutant") && object.containsKey("Source") && object.containsKey("Time") && object.containsKey("Rate")) {
-                Pollutant p = new Pollutant((String) object.get("Pollutant"), (String) object.get("Source"), (String) object.get("Time"), (String) object.get("Rate"));
-                pollutants.add(p);
-            } else {
-                throw new ScenarioParserException("Pollutant at row " + (i+1) + " is bad record.");
+
+            if(!(object.containsKey("source") || object.containsKey("events")))
+                throw new ScenarioParserException("Event at row " + (i+1) + " is bad record.");
+
+            String eventEmmiter = (String) object.get("source");
+            JSONArray events = (JSONArray) object.get("events");
+
+            for(Object event : events) {
+                JSONObject e = (JSONObject) event;
+                if (ConfigParser.objectHasKeys(e, "time", "target", "rate")){
+                    String time = (String) e.get("time");
+                    String eventName = (String) e.get("target");
+                    String rate = (String) e.get("rate");
+
+                    Event ev = new Event(eventName, eventEmmiter, time, rate);
+                    dataList.insertEvent(ev);
+                }else{
+                    throw new ScenarioParserException("Event at row " + (i+1) + " is bad record.");
+                }
+
             }
+
         }
     }
 
-    public ArrayList<Pollutant> hasPollutantsAtTime(LocalTime t){
-        ArrayList<Pollutant> p = new ArrayList<Pollutant>();
-        for(Pollutant pollutant: pollutants){
-            if(pollutant.inTime(t)){
-                p.add(pollutant);
-            }
-        }
-        return p;
-    }
 }

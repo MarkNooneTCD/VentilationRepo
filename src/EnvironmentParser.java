@@ -1,11 +1,9 @@
 import com.opencsv.CSVReader;
+import metrics.Temperature;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class EnvironmentParser {
@@ -23,40 +21,34 @@ public class EnvironmentParser {
     private final int windSpeedKnotsColumn = 12;
 
     private String baseFilePath;
-    private int dataArrayIndex = 0;
 
-    private ArrayList<Data> environmentData = new ArrayList<Data>();
-    private boolean printCSV = false;
-
-    EnvironmentParser(String baseFilePath, boolean printEntries, ScenarioParser scenarioParser, ConfigParser configParser){
+    EnvironmentParser(String baseFilePath,DataList dataList ,boolean printEntries){
         this.baseFilePath = baseFilePath;
-        printCSV = printEntries;
 
         try (CSVReader reader = new CSVReader(new FileReader(baseFilePath))){
             System.out.println("Reading CSV ...");
             List<String[]> csv = reader.readAll();
             System.out.println("Beginning environment parse...");
-            LocalTime time = configParser.getStartTime();
-            LocalDate date = configParser.getStartDate();
-            for(int i =0; i < csv.size(); i++) {
+            for(int i = 0; i < csv.size(); i++) {
 
+                //interpolate any bad data
                 String[] line = interpolateLine(csv, i);
-                if(printCSV) {
-                    System.out.println("Date: " + line[dateColumn] + ", Rain (mm): " + line[rainInMilimetersColumn] + ", Temperature was " + line[temperatureCelciusColumn] +
-                            " celcius, Wetbulb Temperature was " + line[wetBulbTemperatureCelciusColumn] + " celcius, Dew Point Temperature was " + line[dewPointTemperatureCelciusColumn] +
-                            " celcius, Relative Humidity was " + line[relativeHumidityPercentageColumn] + " percent, Vapour Pressure was " + line[vapourPressureHPAColumn] +
-                            " hector pascals, Average Wind Speed was " + line[windSpeedKnotsColumn] + " knots.");
+
+                //parse the data from strings
+                LocalDateTime dateTime = Data.getDateTimeFromString(line[dateColumn]);
+                double temperatureCelcius = Double.parseDouble(line[temperatureCelciusColumn]);
+                Temperature temperature = new Temperature(temperatureCelcius, Temperature.Unit.CELSIUS);
+                double relativeHumidity = Double.parseDouble(line[relativeHumidityPercentageColumn]) / 100;// to decimal
+
+                //Generate data for the full 60 minutes of the hour
+                for(int n = 0; n < 60; n++){
+                    Data d = new Data(dateTime.plusMinutes(n),temperature,relativeHumidity);
+                    dataList.append(d);
                 }
-                for(int n =0; n<60; n++){
-                    ArrayList<Pollutant> tmp = null;//scenarioParser.hasPollutantsAtTime(time);
-                    Data d = new Data(line[dateColumn], line[rainInMilimetersColumn], line[temperatureCelciusColumn], line[wetBulbTemperatureCelciusColumn],
-                            line[dewPointTemperatureCelciusColumn], line[relativeHumidityPercentageColumn], line[vapourPressureHPAColumn], line[windSpeedKnotsColumn], tmp);
-                    environmentData.add(d);
-                    time = time.plusMinutes(1);
-                }
-                time = time.plusMinutes(1);
-                if(time.compareTo(LocalTime.of(00, 00)) == 0){
-                    date = date.plusDays(1);
+
+                if(printEntries) {
+                    System.out.println("Date: " + dateTime.toString() + ", Temperature was " + temperature.celsius() +
+                            " celcius, Relative Humidity was " + line[relativeHumidityPercentageColumn] + " percent");
                 }
             }
             System.out.println("Finished environment parse.");
@@ -86,20 +78,6 @@ public class EnvironmentParser {
             }
         }
         return goodLine;
-    }
-
-    public Data getData(){
-        return hasData()? environmentData.get(dataArrayIndex++) : null;
-    }
-
-    public Data getDataAt(int i){
-        return environmentData.get(i);
-    }
-
-    public boolean hasDataAt(int i){ return environmentData.get(i) != null;}
-
-    public boolean hasData(){
-        return dataArrayIndex < environmentData.size();
     }
 
 

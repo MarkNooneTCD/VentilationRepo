@@ -10,14 +10,19 @@ public class Building{
         this.volume = volume;
     }
 
-
-
-    public void simulate() {
-        //TODO simulate any changes that occur such as heat transfer through the walls
+    public void setAir(Air newAir){
+        this.air = newAir;
     }
 
+    public Air getAir(){
+        return air;
+    }
+
+    public double getVolume(){
+        return volume;
+    }
 
     public void update(Data currentData) {
-        //TODO change the value of internal air based on passed in data
+        //TODO pollutant updating
     }
 }

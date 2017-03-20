@@ -1,11 +1,59 @@
 [
-    {"Pollutant":"Water Vapour", "Source":"Shower", "Time":"09:06-10:40", "Rate":"3"},
-    {"Pollutant":"Carbon Dioxide", "Source":"Person", "Time":"15:38-06:40", "Rate":"1"},
-    {"Pollutant":"Carbon Monoxide", "Source":"Water Heater", "Time":"12:00-16:00", "Rate":"6"},
-    {"Pollutant":"Water Vapour", "Source":"Kettle", "Time":"15:38-15:41", "Rate":"8.3"},
-    {"Pollutant":"Carbon Monoxide", "Source":"Fireplace", "Time":"19:30-23:30", "Rate":"3"},
-    {"Pollutant":"Carbon Dioxide", "Source":"Heater", "Time":"19:30-21:00", "Rate":"6"},
-    {"Pollutant":"Water Vapour", "Source":"Cooker", "Time":"19:15-19:45", "Rate":"4.7"},
-    {"Pollutant":"Carbon Monoxide", "Source":"Clothes Dryer", "Time":"15:38 - 16:40", "Rate":"2"},
-    {"Pollutant":"VOC", "Source":"Collective", "Time":"15:38 - 16:40", "Rate":"0.8"}
+
+    {"source": "Kettle",
+        "events" : [
+            {"target" : "Water Vapour" , "time":"15:38-15:41", "rate":"8.3"}
+        ]
+    },
+
+    {"source": "Cooker",
+        "events" : [
+            {"target" : "Water Vapour", "time":"19:15-19:45", "rate":"4.7"}
+        ]
+    },
+
+    { "source": "Person" ,
+        "events" : [
+            {"target": "Temperature" ,"time" : "9:00-23:30", "rate" : "6000"},
+            {"target": "Carbon Monoxide" ,"time" : "15:38-06:40","rate" : "1"}
+        ]
+    },
+
+    {"source": "Shower",
+        "events" : [
+            {"target": "Water Vapour","time":"09:06-10:40", "rate":"3"}
+        ]
+    },
+
+    {"source": "Heater",
+        "events" : [
+            {"target": "Carbon Dioxide" ,"time":"19:30-21:00", "rate":"6"}
+        ]
+    },
+
+    { "source": "Clothes Dryer",
+        "events" : [
+            {"target": "Carbon Monoxide","time":"15:38 - 16:40", "rate":"2"}
+        ]
+    },
+
+    {"source": "Water Heater",
+        "events" : [
+            {"target": "Carbon Monoxide" ,"time":"12:00-16:00", "rate":"6"}
+        ]
+    },
+
+    { "source": "Fireplace",
+        "events" : [
+            {"target": "Carbon Monoxide","time":"19:30-23:30", "rate":"3"}
+        ]
+    },
+
+    {"source": "Collective",
+        "events" : [
+            {"target" : "VOC" , "time":"15:38 - 16:40", "rate":"0.8"}
+        ]
+    }
+
+
 ]

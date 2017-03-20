@@ -1,4 +1,4 @@
-public class SCV extends VentilationSystem{
+public class SCV extends VentilationSystem {
 
     private double supplyHumidtyThreshold;
     private double supplyTemperatureThreshold;

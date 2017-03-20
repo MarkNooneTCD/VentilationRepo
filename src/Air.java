@@ -41,6 +41,14 @@ public class Air {
         this.relativeHumidity = relativeHumidity;
     }
 
+    public Temperature getTemperature(){
+        return temperature;
+    }
+
+    public double getRelativeHumidity(){
+        return  relativeHumidity;
+    }
+
     public double getHumidityRatio(){
         double vapourPressure = relativeHumidity*getSaturationPressure(temperature).pa();
         return (0.62198*vapourPressure)/ (ATMOSPHERIC_PRESSURE -vapourPressure);
@@ -84,16 +92,13 @@ public class Air {
         double rh3 = (w3*ATMOSPHERIC_PRESSURE)/ ( getSaturationPressure(t3).pa()*(0.62198 + w3));
         double sv3 = (t3.kelvin()*SPECIFIC_GAS_DRY_AIR * (1 + 1.6078*w3)) / ATMOSPHERIC_PRESSURE;
         double vol3 = m3*sv3;
-        System.out.println(String.format("w3 : %f ,h3 : %f\nm3 : %f, rh3 : %f\nsv3 : %f, vol3 : %f\nt3 : %f",
-                w3,h3,m3,rh3,sv3,vol3, t3.celsius()));
 
-        return null;
-
+        return new Air(t3, rh3, vol3);
     }
 
     public static void main(String[] args){
         Air a = new Air(new Temperature(32, Temperature.Unit.CELSIUS), .40, 20);
-        Air b = new Air(new Temperature(12, Temperature.Unit.CELSIUS), .9,25);
+        Air b = new Air(new Temperature(12, Temperature.Unit.CELSIUS), .9, 25);
         a.mix(b);
         System.out.println(a.getSpecificVolume());
     }
