@@ -4,7 +4,7 @@ public class Simulation {
 
 
     public static final String CONFIG_FILE_NAME = "config.json";
-    public static final String ENVIRONMENT_CONFIG_FILE_NAME = "data2016.csv";
+    public static final String ENVIRONMENT_CONFIG_FILE_NAME = "dataDec2016.csv";
     public static final String SCENARIO_CONFIG_FILE_NAME = "scenarios.json";
 
     private static Building building;
@@ -47,7 +47,6 @@ public class Simulation {
 
         while(dataList.hasNext()){
             currentData = dataList.getNext();
-
             outside.update(currentData);
             building.update(currentData);
             dcv.simulate();

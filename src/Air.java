@@ -1,5 +1,7 @@
 import metrics.*;
 
+import java.util.DoubleSummaryStatistics;
+
 /**
  * Air consists of Dry Air and Water Vapour
  */
@@ -41,6 +43,14 @@ public class Air {
         this.relativeHumidity = relativeHumidity;
     }
 
+    public void setVolume(double volume){
+        this.volume = volume;
+    }
+
+    public void setTemperature(double t){
+        this.temperature = new Temperature(t, Temperature.Unit.CELSIUS);
+    }
+
     public Temperature getTemperature(){
         return temperature;
     }
@@ -51,7 +61,7 @@ public class Air {
 
     public double getHumidityRatio(){
         double vapourPressure = relativeHumidity*getSaturationPressure(temperature).pa();
-        return (0.62198*vapourPressure)/ (ATMOSPHERIC_PRESSURE -vapourPressure);
+        return (0.62198*vapourPressure)/ (ATMOSPHERIC_PRESSURE - vapourPressure);
     }
 
     public double getEnthalpy(){
@@ -68,7 +78,10 @@ public class Air {
         if(temp.celsius() > 0) {
             val = Math.pow(Math.E, C8/t + C9 + C10*t + C11*t*t + C12*t*t*t+ C13*Math.log(t));
         }else{
-            val= Math.pow(Math.E, C1*t + C2 + C3*t + C4*Math.pow(t,2) + C5*Math.pow(t,3)+ C6*Math.pow(t,4) + C7*Math.log(t));
+            if(t == 0)
+                t = -0.000001;
+            val= Math.pow(Math.E, C1/t + C2 + C3*t + C4*Math.pow(t,2) + C5*Math.pow(t,3)+ C6*Math.pow(t,4) + C7*Math.log(t));
+            System.out.println(val);
         }
         return new Pressure(val, Pressure.Unit.PA);
     }

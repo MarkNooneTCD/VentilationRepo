@@ -1,3 +1,5 @@
+import metrics.Temperature;
+
 public class DCV extends VentilationSystem {
 
     double demandHumidityThresholdLow;
@@ -17,21 +19,35 @@ public class DCV extends VentilationSystem {
 
     @Override
     public void simulate() {
-        Air newAir = building.getAir().mix(outside.getAir(volumeInput));
 
-        
-        building.setAir(newAir);
-    }
+        Temperature t = building.getAir().getTemperature();
+        if(t.celsius() < demandTemperatureThresholdLow){
+            //heat up
+        }else if(t.celsius() > demandTemperatureThresholdLow){
+            //cool down
+        }
 
-    private boolean exceedsTemperatureThreshold(){
-        double temp = building.getAir().getTemperature().celsius();
-        return temp > demandTemperatureThresholdHigh || temp < demandTemperatureThresholdLow;
-    }
-
-    private boolean exceedsRelativeHumidityThreshold(){
         double rh = building.getAir().getRelativeHumidity();
-        return rh > demandHumidityThresholdHigh || rh < demandHumidityThresholdLow;
+        if(rh < demandHumidityThresholdLow) {
+            //humidify
+        }else if(rh > demandHumidityThresholdHigh){
+            //dehumidify
+        }
+//
+//        Air outsideAir = outside.getAir(volumeInput);
+//        Air insideAir = building.getAir();
+//        Air newAir = building.getAir().mix(outside.getAir(volumeInput));
+//
+//        System.out.println(String.format("Outside : %f , %f\nInside : %f , %f\nNew Inside : %f , %f",
+//                outsideAir.getRelativeHumidity(), outsideAir.getTemperature().celsius()
+//        ,insideAir.getRelativeHumidity(), insideAir.getTemperature().celsius(),
+//                newAir.getRelativeHumidity(), newAir.getTemperature().celsius()));
+//
+//        newAir.setVolume(building.getVolume()); //pretend we vent out the extra volume
+//
+//        building.setAir(newAir);
     }
+
 
 
     public static Builder createDCV(){
