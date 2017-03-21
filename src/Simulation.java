@@ -52,6 +52,15 @@ public class Simulation {
             dcv.simulate();
 
         }
+
+        //Output results here to buffer
+        ResultsWriter resultsWriter = new ResultsWriter();
+        resultsWriter.write("Expense Result", 4.00);
+
+        //When all results have been written to the buffer,
+        //we then flush to disk. This will flush to the output file name
+        //as well as print to console.
+        resultsWriter.flush("results.txt");
     }
 
 }
