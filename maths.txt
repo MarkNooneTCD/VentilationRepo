@@ -40,7 +40,9 @@ humidity ratio:
 
 Pollutants:
 
-Pollutants are typically measured in PPM (Parts per Million).
+Pollutants are typically measured in PPM (Parts per Million). As such, it should be fairly easy to add them together.
+PPM of Mass x + PPM of Mass y = PPM of mix of Mass xy
+
 
 Carbon Dioxide - C02:
 The average CO2 level in the atmosphere is ~400ppm.
@@ -79,5 +81,21 @@ There are between 50-300 different VOCs indoors so we would implement them as a 
 <1PPM will not result in any health effects
 1-10ppm may produce some minor health effects and complaints
 >10ppm will produce more serious effects.
+<<<<<<< HEAD
+For VOCs, it is probably best to allow the user to specify the growth levels. For the senarios bit its hard to know
+as humans don't produce VOCs so it would probabyl be best to have a fixed rate of growth.
+
+Energy needed to heat/cool air:
+
+Specific heat capacity of dry air: 1.00j/gk
+
+Energy needed to humidify/dehumidify air:
+
+
+
+
+
+=======
 For VOCs, it is probably best to allow the user to specify the growth levels. For the scenarios bit its hard to know
 as humans don't produce VOCs so it would probably be best to have a fixed rate of growth.
+>>>>>>> f44fcef3d3dde66f9e25f6d957ef4012da51379a
