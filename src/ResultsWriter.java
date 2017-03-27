@@ -47,7 +47,8 @@ public class ResultsWriter {
         } finally {
             try {
                 // Close the writer regardless of what happens...
-                writer.close();
+                if(writer != null)
+                    writer.close();
                 results = new ArrayList<String[]>();
             } catch (Exception e) {
             }

@@ -5,12 +5,12 @@
 			"DCVHumidityHigh":".6",
 			"DCVHumidityLow":".4",
 			"DCVTemperatureHigh":"30",
-			"DCVTemperatureLow":"12",
+			"DCVTemperatureLow":"20",
 			"DCVQualityLow":"92",
 			"SCVHumidityHigh":".6",
 			"SCVHumidityLow":".4",
-			"SCVTemperatureHigh":"28",
-			"SCVTemperatureLow":"14",
+			"SCVTemperatureHigh":"30",
+			"SCVTemperatureLow":"20",
 			"SCVQualityLow":"88"
 	},
 	"VentilationSystem":{
@@ -23,7 +23,7 @@
 	"Building": {
 		"Temperature":"22",
 		"HumidityRatio":".5",
-		"U-Value":"0.15",
+		"U-Value":"0.9",
 		"AirVolume":"20"
 	}
 }

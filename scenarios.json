@@ -2,44 +2,45 @@
 
     {"source": "Kettle",
         "events" : [
-            {"target" : "Water Vapour" , "time":"15:38-15:41", "rate":"8.3"}
+            {"target" : "Water Vapour" , "time":"15:38-15:41", "rate":".800"}
         ]
     },
 
     {"source": "Cooker",
         "events" : [
-            {"target" : "Water Vapour", "time":"19:15-19:45", "rate":"4.7"}
+            {"target" : "Water Vapour", "time":"19:15-19:45", "rate":".47"}
         ]
     },
 
     { "source": "Person" ,
         "events" : [
             {"target": "Temperature" ,"time" : "9:00-23:30", "rate" : "6000"},
-            {"target": "Carbon Monoxide" ,"time" : "15:38-06:40","rate" : "1"}
+            {"target": "Carbon Monoxide" ,"time" : "15:38-06:40","rate" : "1"},
+            {"target": "Water Vapour", "time": "9:00-23:30", "rate" : "0.025"}
         ]
     },
 
     {"source": "Shower",
         "events" : [
-            {"target": "Water Vapour","time":"09:06-10:40", "rate":"3"}
+            {"target": "Water Vapour","time":"09:06-9:30", "rate":".65"}
         ]
     },
 
     {"source": "Heater",
         "events" : [
-            {"target": "Carbon Dioxide" ,"time":"19:30-21:00", "rate":"6"}
+            {"target": "Carbon Dioxide" ,"time":"19:30-21:00", "rate":"600"}
         ]
     },
 
     { "source": "Clothes Dryer",
         "events" : [
-            {"target": "Carbon Monoxide","time":"15:38 - 16:40", "rate":"2"}
+            {"target": "Carbon Monoxide","time":"15:38 - 16:40", "rate":"200"}
         ]
     },
 
     {"source": "Water Heater",
         "events" : [
-            {"target": "Carbon Monoxide" ,"time":"12:00-16:00", "rate":"6"}
+            {"target": "Carbon Monoxide" ,"time":"12:00-16:00", "rate":"600"}
         ]
     },
 

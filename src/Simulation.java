@@ -26,7 +26,8 @@ public class Simulation {
         Temperature internalTemperature = new Temperature(config.getBuildingTemperature(), Temperature.Unit.CELSIUS);
         double internalVolume = config.getBuildingAirVolume();
         double internalHumidityRatio = config.getBuildingHumidityRatio();
-        building = new Building(internalVolume, internalTemperature, internalHumidityRatio);
+        double uvalue = config.getBuildingUValue();
+        building = new Building(internalVolume, internalTemperature, internalHumidityRatio, uvalue);
 
         //Setup outside
         Data currentData = dataList.getNext();
@@ -52,15 +53,15 @@ public class Simulation {
             dcv.simulate();
 
         }
+        System.out.println("Start date: " + dataList.getDataByIndex(0).getDateTime().toString());
+        System.out.println("End date  : " + currentData.getDateTime().toString());
+        System.out.println("Heating energy used : " + dcv.heatEnergyUsed);
+        System.out.println("Minutes outside temperature : " + dcv.timeSpentOutsideThresholdTemperature); //will basically never happen
+        System.out.println("Minutes outside humidity : " + dcv.timeSpentOutisdeThresholdHumidity);
 
         //Output results here to buffer
         ResultsWriter resultsWriter = new ResultsWriter();
-        resultsWriter.write("Expense Result", 4.00);
 
-        //When all results have been written to the buffer,
-        //we then flush to disk. This will flush to the output file name
-        //as well as print to console.
-        resultsWriter.flush("results.txt");
     }
 
 }

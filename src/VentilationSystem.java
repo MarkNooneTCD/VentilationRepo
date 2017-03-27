@@ -9,6 +9,14 @@ public abstract class VentilationSystem{
     double volumeInput;
     double volumeOutput;
 
+    public double totalEnergyUsed;
+
+    public double timeSpentOutsideThresholdTemperature = 0;
+    public double timeSpentOutisdeThresholdHumidity = 0;
+    public double timeSpentForcingHumidityReduction = 0;
+    public double volumeOfAirVentedIn = 0;
+    public double heatEnergyUsed = 0;
+
     //Other parts of the system all Ventilation Systems need
     Outside outside;
     Building building;

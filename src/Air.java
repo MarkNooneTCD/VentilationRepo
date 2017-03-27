@@ -1,7 +1,5 @@
 import metrics.*;
 
-import java.util.DoubleSummaryStatistics;
-
 /**
  * Air consists of Dry Air and Water Vapour
  */
@@ -30,7 +28,7 @@ public class Air {
 
     private static final double UNIVERSAL_GAS_CONSTANT = 8.314;
 
-    private static final double ATMOSPHERIC_PRESSURE = Pressure.STANDARD_ATMOSPHERIC_PRESSURE;
+    public static final double ATMOSPHERIC_PRESSURE = Pressure.STANDARD_ATMOSPHERIC_PRESSURE;
     //Must be set by constructor
     private Temperature temperature;
     private double volume;
@@ -51,8 +49,16 @@ public class Air {
         this.temperature = new Temperature(t, Temperature.Unit.CELSIUS);
     }
 
+    public void setRelativeHumidity(double rh){
+        this.relativeHumidity = rh;
+    }
+
     public Temperature getTemperature(){
         return temperature;
+    }
+
+    public double getVolume(){
+        return volume;
     }
 
     public double getRelativeHumidity(){
@@ -77,14 +83,35 @@ public class Air {
         double val;
         if(temp.celsius() > 0) {
             val = Math.pow(Math.E, C8/t + C9 + C10*t + C11*t*t + C12*t*t*t+ C13*Math.log(t));
-        }else{
-            if(t == 0)
-                t = -0.000001;
+        }else if(temp.celsius() <= 0){
+            if(t == 0) t = -0.0000001;
             val= Math.pow(Math.E, C1/t + C2 + C3*t + C4*Math.pow(t,2) + C5*Math.pow(t,3)+ C6*Math.pow(t,4) + C7*Math.log(t));
-            System.out.println(val);
+        }else{
+            throw new NumberFormatException("Temperature was NaN");
         }
         return new Pressure(val, Pressure.Unit.PA);
     }
+
+    public double getWaterVapourPressure(){
+//        return ATMOSPHERIC_PRESSURE * getHumidityRatio() / (0.622 + getHumidityRatio());
+        return relativeHumidity * getSaturationPressure(temperature).pa();
+    }
+
+    public double getWaterVapourDensity(){
+        return 0.0022*getWaterVapourPressure() / temperature.kelvin();
+    }
+
+    public double getAirDensity(){
+        double top = (ATMOSPHERIC_PRESSURE-getWaterVapourPressure())*0.028964 + getWaterVapourPressure()*0.018016;
+        double bot = 8.314 * temperature.kelvin();
+        return top/bot;
+    }
+
+    public double getMassOfAir(){
+        return getAirDensity()*volume;
+    }
+
+
 
     public Air mix(Air other){
         double h1 = this.getEnthalpy();
@@ -108,13 +135,5 @@ public class Air {
 
         return new Air(t3, rh3, vol3);
     }
-
-    public static void main(String[] args){
-        Air a = new Air(new Temperature(32, Temperature.Unit.CELSIUS), .40, 20);
-        Air b = new Air(new Temperature(12, Temperature.Unit.CELSIUS), .9, 25);
-        a.mix(b);
-        System.out.println(a.getSpecificVolume());
-    }
-
 
 }
