@@ -7,8 +7,7 @@ public class DCV extends VentilationSystem {
     double demandTemperatureThresholdHigh;
     double demandTemperatureThresholdLow;
 
-
-    private DCV(Builder b){
+    DCV(Builder b){
         super(b);
         this.demandHumidityThresholdLow = b.demandHumidityThresholdLow;
         this.demandHumidityThresholdHigh = b.demandHumidityThresholdHigh;
@@ -22,34 +21,47 @@ public class DCV extends VentilationSystem {
 
         Air i = building.getAir();
         Air o = outside.getAir(volumeInput);
+        boolean vented = false;
+        double rh = building.getAir().getRelativeHumidity();
+
         //if inside lower than threshold
         if(i.getTemperature().celsius() < demandTemperatureThresholdLow+1){
 
             //if outside hotter than inside
             if(o.getTemperature().celsius() > i.getTemperature().celsius()){
-                ventInAir(volumeInput);
+                ventInAir(o);
+                vented = true;
             }else{ //heat up some other way
-               double energyNeeded = i.getMassOfAir()*1.01
-                       *Math.abs(i.getTemperature().celsius() - demandTemperatureThresholdLow);
-                i.setTemperature(demandTemperatureThresholdLow);
-                i.setRelativeHumidity(i.getWaterVapourPressure()
-                        /Air.getSaturationPressure(new Temperature(demandTemperatureThresholdLow, Temperature.Unit.CELSIUS)).pa());
-                heatEnergyUsed += energyNeeded;
+                double heatedAirTemp = (( heaterPower*60/1000) + o.getMassOfAir()*1.005*o.getTemperature().celsius())
+                        / o.getMassOfAir() * 1.005;
+                o.setTemperature(heatedAirTemp);
+                Air newInside = i.mix(o);
+                if(newInside.getTemperature().celsius() > i.getTemperature().celsius()) {
+                    i.setTemperature(newInside.getTemperature().celsius());
+                    i.setRelativeHumidity(newInside.getRelativeHumidity());
+                    results.heatEnergyUsed += heaterPower;
+                    results.heaterRunTime += 1;
+                }
             }
 
         //if inside hotter than threshold
-        }else if(i.getTemperature().celsius() > demandTemperatureThresholdHigh - 1){
+        }else if(i.getTemperature().celsius() > demandTemperatureThresholdHigh - 1) {
 
             //if outside cooler than inside
-            if(o.getTemperature().celsius() < i.getTemperature().celsius()){
-                ventInAir(volumeInput);
-            }
-            else{ //else cool some other way
-                System.out.println("cool down");
+            if (o.getTemperature().celsius() < i.getTemperature().celsius()) {
+                ventInAir(o);
+                vented = true;
+            } else { //else cool some other way
+                double cooledAirTemp = (( -coolerPower*60/1000) + o.getMassOfAir()*1.005*o.getTemperature().celsius())
+                        / o.getMassOfAir() * 1.005;
+                i.setTemperature(cooledAirTemp);
+                Air newInside = i.mix(o);
+                i.setTemperature(newInside.getTemperature().celsius());
+                i.setRelativeHumidity(newInside.getRelativeHumidity());
+                results.coolingEnergyUsed += coolerPower;
+                results.coolingRunTime += 1;
             }
         }
-
-        double rh = building.getAir().getRelativeHumidity();
 
         //if inside rh lower than threshold
         if(rh < demandHumidityThresholdLow) {
@@ -57,51 +69,83 @@ public class DCV extends VentilationSystem {
             //if resultant air is within tolerable temperature and new mix has higher rh than air inside
             if(mixedAir.getTemperature().celsius() < demandTemperatureThresholdHigh - 1
                     && mixedAir.getTemperature().celsius() > demandTemperatureThresholdLow +1
-                    && mixedAir.getRelativeHumidity() > i.getRelativeHumidity()){
-                ventInAir(volumeInput);
+                    && mixedAir.getRelativeHumidity() > i.getRelativeHumidity()
+                    && !vented){
+                ventInAir(o);
+                vented = true;
             }
             else if(mixedAir.getRelativeHumidity() > i.getRelativeHumidity()){ //else dehumidify somehow
-                ventInAir(volumeInput);
+                ventInAir(o);
+                vented = true;
             }else{
-                System.out.println("humidify");
+                double waterAdded = (humidifierLitresAdderPerDay * 1000)/ (24.0 * 60.0);
+                results.waterAdded += waterAdded;
+                results.humidifierEnergyUsed += humidifierPower*60;
+                results.humidifierRunTime += 1;
+                building.handleWaterVapourChange(waterAdded);
             }
 
         //if inside rh greater than threshold
-        }else if(rh > demandHumidityThresholdHigh){
+        }else if(rh > demandHumidityThresholdHigh) {
 
             Air mixedAir = o.mix(i);
             //if resultant air is within tolerable temperature and new mix has lower rh than air inside
-            if(mixedAir.getTemperature().celsius() < demandTemperatureThresholdHigh - 1
+            if (mixedAir.getTemperature().celsius() < demandTemperatureThresholdHigh - 1
                     && mixedAir.getTemperature().celsius() > demandTemperatureThresholdLow + 1
-                    && mixedAir.getRelativeHumidity() < i.getRelativeHumidity()){
-                ventInAir(volumeInput);
+                    && mixedAir.getRelativeHumidity() < i.getRelativeHumidity()
+                    && !vented) {
+                ventInAir(o);
+                vented = true;
+            } else if (mixedAir.getRelativeHumidity() < i.getRelativeHumidity()) { //if mixed air has less humidity, just do it
+                ventInAir(o);
+                vented = true;
+            } else {
+                double waterRemoved = (dehumidifierLitresRemovePerDay * 1000)/ (24.0 * 60.0);
+                results.totalWaterRemoved += waterRemoved;
+                results.dehumidifierEnergyUsed += dehumidifierPower*60;
+                results.dehumidifierRunTime += 1;
+                building.handleWaterVapourChange(-waterRemoved);
             }
-            else if(mixedAir.getRelativeHumidity() < i.getRelativeHumidity()){ //if mixed air has less humidity, just do it
-                timeSpentForcingHumidityReduction += 1;
-                ventInAir(volumeInput);
-            }else{
-                System.out.println("dehumidify");
-            }
+        }
 
+        if(building.getVocPpm() > vocThreshold && !vented) {
+            ventInAir(o);
+            vented = true;
+        }
+        if(building.getCarbonDioxidePpm() > carbonDioxideThreshold && !vented) {
+            ventInAir(o);
+            vented = true;
+        }
+        if(building.getCarbonMonoxidePpm() > carbonMonoxideThreshold && !vented){
+            ventInAir(o);
+            vented = true;
         }
         if(i.getRelativeHumidity() < demandHumidityThresholdLow
                 || i.getRelativeHumidity() > demandHumidityThresholdHigh){
-            timeSpentOutisdeThresholdHumidity += 1;
+            results.timeSpentOutisdeThresholdHumidity += 1;
         }
         if(i.getTemperature().celsius() < demandTemperatureThresholdLow
                 || i.getTemperature().celsius() > demandTemperatureThresholdHigh){
-            timeSpentOutsideThresholdTemperature += 1;
+            results.timeSpentOutsideThresholdTemperature += 1;
         }
-
+        //check for higher or lowest values for results
+        resultsUpdate();
     }
 
-    public void ventInAir(double amount){
-        Air outsideAir = outside.getAir(amount);
+    private void ventInAir(Air outsideAir){
         Air newAir = building.getAir().mix(outsideAir);
         newAir.setVolume(building.getVolume());
         building.setAir(newAir);
+        double factorReduction = (building.getVolume() - volumeInput)/building.getVolume();
 
-        volumeOfAirVentedIn += amount;
+        results.CO2vented += (building.getCarbonDioxidePpm() - building.getCarbonDioxidePpm()*factorReduction);
+        results.COvented += (building.getCarbonMonoxidePpm() - building.getCarbonMonoxidePpm()*factorReduction);
+        results.VOCvented += (building.getVocPpm() - building.getVocPpm()*factorReduction);
+
+        building.setCarbonDioxide(building.getCarbonDioxidePpm() * factorReduction);
+        building.setCarbonMonoxide(building.getCarbonMonoxidePpm() * factorReduction);
+        building.setVOC(building.getVocPpm() * factorReduction);
+        results.volumeOfAirVentedIn += volumeInput;
     }
 
 

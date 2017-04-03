@@ -2,28 +2,35 @@
 	"ElectricityCostPerKilowatt":"0.35",
 	"DataStartDateAndTime":"01-jan-1987 00:00",
 	"Thresholds":{
-			"DCVHumidityHigh":".6",
-			"DCVHumidityLow":".4",
-			"DCVTemperatureHigh":"30",
-			"DCVTemperatureLow":"20",
-			"DCVQualityLow":"92",
-			"SCVHumidityHigh":".6",
-			"SCVHumidityLow":".4",
-			"SCVTemperatureHigh":"30",
-			"SCVTemperatureLow":"20",
-			"SCVQualityLow":"88"
+			"CarbonMonoxideThreshold":"9",
+			"CarbonDioxideThreshold":"5000",
+			"VOCThreshold":"1",
+			"HumidityHigh":".6",
+			"HumidityLow":".4",
+			"TemperatureHigh":"30",
+			"TemperatureLow":"20"
 	},
 	"VentilationSystem":{
-		"MaxAirIntake":"0.6",
-		"MaxAirOutake":"0.03125",
-		"CostPerTemperatureChange":"1",
-		"CostPerHumidityChange":"1",
-		"CostPerQualityChange":"1"
+		"MaxAirIntake":"1"
+	},
+	"Dehumidifier":{
+		"LitresRemovedPerDay":"10",
+		"Power":"100"
+	},
+	"Humidifier":{
+		"LitresAddedPerDay":"3",
+		"Power":"100"
+	},
+	"Heater":{
+		"Power":"300"
+	},
+	"Cooler":{
+		"Power":"300"
 	},
 	"Building": {
 		"Temperature":"22",
-		"HumidityRatio":".5",
+		"RelativeHumidity":".5",
 		"U-Value":"0.9",
-		"AirVolume":"20"
+		"AirVolume":"30"
 	}
 }

@@ -2,14 +2,17 @@ import metrics.Temperature;
 
 public class Building{
 
-    private double volume;
-    private double carbonMonoxide = 0;
-    private double voc = 0;
+    public static double PSEUDO_PPM_VOLUME = 0.01;
+
     private Air air;
+    private double volume;
     private double uvalue;
     private double exposedBuilding = 5;
-
     private double eneryLossToInsulation = 0;
+
+    private double carbonMonoxidePpm = 0;
+    private double carbonDioxidePpm = 0;
+    private double vocPpm = 0;
 
     public Building(double volume, Temperature temperature, double relativeHumidity, double uvalue){
         this.air = new Air(temperature, relativeHumidity, volume);
@@ -29,13 +32,28 @@ public class Building{
         return volume;
     }
 
-    public void setCarbonMonoxideLevels(double val){
-        this.carbonMonoxide = val;
+    public void setCarbonMonoxide(double val){
+        this.carbonMonoxidePpm = val;
     }
 
     public void setVOC(double val){
-        this.voc = val;
+        this.vocPpm = val;
     }
+
+    public void setCarbonDioxide(double val) { this.carbonDioxidePpm = val;}
+
+    public double getCarbonMonoxidePpm() {
+        return carbonMonoxidePpm;
+    }
+
+    public double getCarbonDioxidePpm(){
+        return carbonDioxidePpm;
+    }
+
+    public double getVocPpm(){
+        return vocPpm;
+    }
+
 
     public void update(Data currentData) {
         //heat loss due to convection
@@ -51,26 +69,26 @@ public class Building{
             switch (event.getType()){
 
                 case TEMPERATURE:
-                    handleTemperatureChange(event);
+                    handleTemperatureChange(event.getRate());
                     break;
                 case WATER_VAPOUR:
-                    handleWaterVapourChange(event);
+                    handleWaterVapourChange(event.getRate());
                     break;
                 case VOC:
-                    handleVOCChange(event);
+                    handleVOCChange(event.getRate());
                     break;
                 case CARBON_MONOXIDE:
-                    handleCarbonMonoxideChange(event);
+                    handleCarbonMonoxideChange(event.getRate());
                     break;
                 case CARBON_DIOXIDE:
-                    handleCarbonDioxideChange(event);
+                    handleCarbonDioxideChange(event.getRate());
                     break;
             }
         }
     }
 
-    private void handleTemperatureChange(Event e){
-        double energy = e.getRate() / 1000.0;
+    private void handleTemperatureChange(double rate){
+        double energy = rate / 1000.0;
 
         //temp change
         double t = energy / air.getMassOfAir() * 1.01 + air.getTemperature().celsius();
@@ -85,12 +103,12 @@ public class Building{
     }
 
 
-    private void handleWaterVapourChange(Event e){
-        double waterVapour = e.getRate();
+    public void handleWaterVapourChange(double rate){
+        double waterVapour = rate;
         //humidity change
 
         double currentDensity = air.getWaterVapourDensity();
-        double newDensity = (waterVapour/1000.0)/air.getVolume() + currentDensity;
+        double newDensity = (waterVapour/1000.0)/(air.getVolume()) + currentDensity;
         double newVapourPressure = newDensity*air.getTemperature().kelvin() / 0.0022;
         double newRH = newVapourPressure / Air.getSaturationPressure(air.getTemperature()).pa();
         air.setRelativeHumidity(newRH);
@@ -98,23 +116,55 @@ public class Building{
         double newTemp = 0.0022*newVapourPressure / newDensity;  //innacuracy here
         Temperature t = new Temperature(newTemp, Temperature.Unit.KELVIN);
         air.setTemperature(t.celsius());
+    }
+
+    public void handleCarbonDioxideChange(double rate){
+        double co2 = rate;
+        double current = carbonDioxidePpm;
+
+        //PPM[pt] = PPM[NTP]*(760 / P)*(T / 273.15)    // P (mmHG) , T (K)
+//        double addedCO2 = co2 * (760 / 760) * (air.getTemperature().kelvin() / 273.15);
+
+        //(Mg/M^3) = PPM[pt] * (22.4/ MW)*(760 / P)* (T / 273.15)
+        double currentMg = current * (22.4/ 44.01)*(760/760)*(air.getTemperature().kelvin() / 273.15);
+        double addedMg = co2 * (22.4/ 44.01)*(760/760)*(air.getTemperature().kelvin() / 273.15);
+
+        double totalMg = (currentMg * volume + addedMg * (PSEUDO_PPM_VOLUME)) / (volume + PSEUDO_PPM_VOLUME);
+
+        carbonDioxidePpm = totalMg*(22.4/ 44.01)*(273.15 / air.getTemperature().kelvin()    ); //convert to stp
+    }
+
+    private void handleCarbonMonoxideChange(double rate){
+        double co = rate;
+        double current = getCarbonMonoxidePpm();
+
+        //PPM[pt] = PPM[NTP]*(760 / P)*(T / 273.15)    // P (mmHG) , T (K)
+//        double addedCO = co2 * (760 / 760) * (air.getTemperature().kelvin() / 273.15);
+
+        //(Mg/M^3) = PPM[pt] * (22.4/ MW)*(760 / P)* (T / 273.15)
+        double currentMg = current * (22.4/ 28.01)*(760/760)*(air.getTemperature().kelvin() / 273.15);
+        double addedMg = co* (22.4/ 28.01)*(760/760)*(air.getTemperature().kelvin() / 273.15);
+
+        double totalMg = (currentMg * volume + addedMg * (PSEUDO_PPM_VOLUME)) / (volume + PSEUDO_PPM_VOLUME);
+
+        carbonMonoxidePpm = totalMg*(22.4/ 28.01)*(273.15 / air.getTemperature().kelvin()); //convert to stp
 
     }
 
-    private void handleCarbonDioxideChange(Event e){
+    private void handleVOCChange(double rate){
+        double voc = rate;
+        double current = vocPpm;
 
+        //PPM[pt] = PPM[NTP]*(760 / P)*(T / 273.15)    // P (mmHG) , T (K)
+//        double addedVOC = co2 * (air.getTemperature().kelvin() / 273.15);
+
+        //(Mg/M^3) = PPM[pt] * (22.4/ MW)*(760 / P)* (T / 273.15)
+        double currentMg = current * (22.4/ 44)*(air.getTemperature().kelvin() / 273.15);
+        double addedMg = voc * (22.4/ 44)*(air.getTemperature().kelvin() / 273.15);
+
+        double totalMg = (currentMg * volume + addedMg * (PSEUDO_PPM_VOLUME)) / (volume + PSEUDO_PPM_VOLUME);
+
+        vocPpm = totalMg*(22.4/ 28.01)*(273.15 / air.getTemperature().kelvin()); //convert to stp
     }
-
-    private void handleCarbonMonoxideChange(Event e){
-
-    }
-
-    private void handleVOCChange(Event e){
-
-    }
-
-
-
-
 
 }

@@ -15,8 +15,8 @@
     { "source": "Person" ,
         "events" : [
             {"target": "Temperature" ,"time" : "9:00-23:30", "rate" : "6000"},
-            {"target": "Carbon Monoxide" ,"time" : "15:38-06:40","rate" : "1"},
-            {"target": "Water Vapour", "time": "9:00-23:30", "rate" : "0.025"}
+            {"target": "Carbon Monoxide" ,"time" : "15:38-06:40","rate" : "10"},
+            {"target": "Water Vapour", "time": "9:00-23:30", "rate" : "0.25"}
         ]
     },
 
@@ -28,31 +28,31 @@
 
     {"source": "Heater",
         "events" : [
-            {"target": "Carbon Dioxide" ,"time":"19:30-21:00", "rate":"600"}
+            {"target": "Carbon Dioxide" ,"time":"19:30-21:00", "rate":"3"}
         ]
     },
 
     { "source": "Clothes Dryer",
         "events" : [
-            {"target": "Carbon Monoxide","time":"15:38 - 16:40", "rate":"200"}
+            {"target": "Carbon Monoxide","time":"15:38 - 16:40", "rate":"2"}
         ]
     },
 
     {"source": "Water Heater",
         "events" : [
-            {"target": "Carbon Monoxide" ,"time":"12:00-16:00", "rate":"600"}
+            {"target": "Carbon Monoxide" ,"time":"12:00-16:00", "rate":"6"}
         ]
     },
 
     { "source": "Fireplace",
         "events" : [
-            {"target": "Carbon Monoxide","time":"19:30-23:30", "rate":"3"}
+            {"target": "Carbon Monoxide","time":"19:30-23:30", "rate":"9"}
         ]
     },
 
     {"source": "Collective",
         "events" : [
-            {"target" : "VOC" , "time":"15:38 - 16:40", "rate":"0.8"}
+            {"target" : "VOC" , "time":"15:38 - 16:40", "rate":"0.4"}
         ]
     }
 

@@ -4,32 +4,29 @@ import org.json.simple.parser.ParseException;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 public class ConfigParser {
 
     private double ElectricityCostPerKilowatt;
-    private double DCVTemperatureThresholdHigh;
-    private double DCVTemperatureThresholdLow;
-    private double DCVHumidityThresholdHigh;
-    private double DCVHumidityThresholdLow;
-    private double DCVAirQualityThresholdLow;
-    private double SCVTemperatureThresholdHigh;
-    private double SCVTemperatureThresholdLow;
-    private double SCVHumidityThresholdHigh;
-    private double SCVHumidityThresholdLow;
-    private double SCVAirQualityThresholdLow;
+    private double VOCThreshold;
+    private double CarbonMonoxideThreshold;
+    private double CarbonDioxideThreshold;
+    private double TemperatureThresholdHigh;
+    private double TemperatureThresholdLow;
+    private double HumidityThresholdHigh;
+    private double HumidityThresholdLow;
     private double VentMaxAirIntake;
-    private double VentMaxAirOutake;
-    private double VentCostPerTemperatureChange;
-    private double VentCostPerHumidityChange;
-    private double VentCostPerQualityChange;
     private double BuildingUValue;
     private double BuildingAirVolume;
     private double BuildingTemperature;
-    private double BuildingHumidityRatio;
+    private double BuildingRelativeHumidity;
+    private double dehumidifierLitresRemovedPerDay;
+    private double dehumidifierPower;
+    private double humidifierLitresAddedPerDay;
+    private double humidifierPower;
+    private double heaterPower;
+    private double coolerPower;
     private LocalDateTime startDateTime;
 
     private JSONObject configObject;
@@ -72,15 +69,28 @@ public class ConfigParser {
         JSONObject building;
         JSONObject thresholds;
         JSONObject ventilationSystem;
-        if(objectHasKeys(configObject, "Thresholds", "VentilationSystem", "Building")){
+        JSONObject dehumidifier;
+        JSONObject humidifier;
+        JSONObject heater;
+        JSONObject cooler;
+        if(objectHasKeys(configObject, "Thresholds", "VentilationSystem", "Building", "Dehumidifier",
+                "Humidifier","Heater","Cooler")){
             building = (JSONObject) configObject.get("Building");
             thresholds = (JSONObject) configObject.get("Thresholds");
             ventilationSystem = (JSONObject) configObject.get("VentilationSystem");
+            dehumidifier = (JSONObject) configObject.get("Dehumidifier");
+            humidifier = (JSONObject) configObject.get("Humidifier");
+            heater = (JSONObject) configObject.get("Heater");
+            cooler = (JSONObject) configObject.get("Cooler");
         } else {
-            throw new ConfigParserException("Building, Threshold or Ventilation System");
+            throw new ConfigParserException("Config main objects");
         }
 
-        if(building == null || !objectHasKeys(building, "AirVolume", "U-Value", "HumidityRatio", "Temperature")){
+
+        /*
+         * Building
+         */
+        if(building == null || !objectHasKeys(building, "AirVolume", "U-Value", "RelativeHumidity", "Temperature")){
             throw new ConfigParserException("Building Object");
         } else {
             String s = (String) building.get("AirVolume");
@@ -89,81 +99,76 @@ public class ConfigParser {
             BuildingUValue = Double.parseDouble(s);
             s = (String) building.get("Temperature");
             BuildingTemperature = Double.parseDouble(s);
-            s = (String) building.get("HumidityRatio");
-            BuildingHumidityRatio = Double.parseDouble(s);
-
-            if(printStats) {
-                System.out.println("Building Air Volume is " + BuildingAirVolume + " meters cubed.");
-                System.out.println("Building U-Value is " + BuildingUValue + " watts per meters squared.");
-                System.out.println("Building Temperature is " + BuildingTemperature + " degrees Celsius");
-                System.out.println("Building Humidity Ratio is " + BuildingHumidityRatio);
-            }
+            s = (String) building.get("RelativeHumidity");
+            BuildingRelativeHumidity = Double.parseDouble(s);
         }
 
+        /*
+         * Dehumidifier
+         */
+        if(dehumidifier == null || !objectHasKeys(dehumidifier, "Power", "LitresRemovedPerDay")){
+            throw new ConfigParserException("Dehumidifier object");
+        }else {
+            dehumidifierLitresRemovedPerDay = Double.parseDouble((String) dehumidifier.get("LitresRemovedPerDay"));
+            dehumidifierPower = Double.parseDouble((String) dehumidifier.get("Power"));
+        }
 
-
-        if(thresholds == null || !objectHasKeys(thresholds, "DCVHumidityHigh", "DCVHumidityLow", "DCVTemperatureHigh", "DCVTemperatureLow","DCVQualityLow",
-                "SCVHumidityHigh","SCVHumidityLow", "SCVTemperatureLow","SCVTemperatureHigh","SCVQualityLow")){
+        /*
+         * Thresholds
+         */
+        if(thresholds == null || !objectHasKeys(thresholds, "HumidityHigh", "HumidityLow",
+                "TemperatureHigh", "TemperatureLow", "CarbonMonoxideThreshold",
+                "CarbonDioxideThreshold" ,"VOCThreshold")){
             throw new ConfigParserException("Threshold Object");
         } else {
-            String s = (String) thresholds.get("DCVHumidityHigh");
-            DCVHumidityThresholdHigh = Double.parseDouble(s);
-            s = (String) thresholds.get("DCVHumidityLow");
-            DCVHumidityThresholdLow = Double.parseDouble(s);
-            s = (String) thresholds.get("DCVTemperatureHigh");
-            DCVTemperatureThresholdHigh = Double.parseDouble(s);
-            s = (String) thresholds.get("DCVTemperatureLow");
-            DCVTemperatureThresholdLow = Double.parseDouble(s);
-            s = (String) thresholds.get("DCVQualityLow");
-            DCVAirQualityThresholdLow = Double.parseDouble(s);
-            s = (String) thresholds.get("SCVHumidityHigh");
-            SCVHumidityThresholdHigh = Double.parseDouble(s);
-            s = (String) thresholds.get("SCVHumidityLow");
-            SCVHumidityThresholdLow = Double.parseDouble(s);
-            s = (String) thresholds.get("SCVTemperatureHigh");
-            SCVTemperatureThresholdHigh = Double.parseDouble(s);
-            s = (String) thresholds.get("SCVTemperatureLow");
-            SCVTemperatureThresholdLow = Double.parseDouble(s);
-            s = (String) thresholds.get("SCVHumidityLow");
-            SCVAirQualityThresholdLow = Double.parseDouble(s);
-
-            if(printStats) {
-                System.out.println("DCV Humidity High Threshold is " + DCVHumidityThresholdHigh + " percent.");
-                System.out.println("DCV Humidity Low Threshold is " + DCVHumidityThresholdLow + " percent.");
-                System.out.println("DCV Temperature High Threshold is " + DCVTemperatureThresholdHigh + " celcius.");
-                System.out.println("DCV Temperature Low Threshold is " + DCVTemperatureThresholdLow + " celcius.");
-                System.out.println("DCV Air Quality Threshold is " + DCVAirQualityThresholdLow + " percent.");
-
-                System.out.println("SCV Humidity High Threshold is " + SCVHumidityThresholdHigh + " percent.");
-                System.out.println("SCV Humidity Low Threshold is " + SCVHumidityThresholdLow + " percent.");
-                System.out.println("SCV Temperature High Threshold is " + SCVTemperatureThresholdHigh + " celcius.");
-                System.out.println("SCV Temperature Low Threshold is " + SCVTemperatureThresholdLow + " celcius.");
-                System.out.println("SCV Air Quality Threshold is " + SCVAirQualityThresholdLow + " percent.");
-            }
+            HumidityThresholdHigh=Double.parseDouble((String) thresholds.get("HumidityHigh"));
+            HumidityThresholdLow=Double.parseDouble((String) thresholds.get("HumidityLow"));
+            TemperatureThresholdHigh=Double.parseDouble((String) thresholds.get("TemperatureHigh"));
+            TemperatureThresholdLow=Double.parseDouble((String) thresholds.get("TemperatureLow"));
+            CarbonMonoxideThreshold=Double.parseDouble((String) thresholds.get("CarbonMonoxideThreshold"));
+            CarbonDioxideThreshold=Double.parseDouble((String) thresholds.get("CarbonDioxideThreshold"));
+            VOCThreshold=Double.parseDouble((String) thresholds.get("VOCThreshold"));
         }
 
-        if(ventilationSystem == null || !objectHasKeys(ventilationSystem, "MaxAirIntake", "MaxAirOutake",
-                "CostPerTemperatureChange", "CostPerHumidityChange", "CostPerQualityChange")){
+
+        /*
+         * Ventilation
+         */
+        if(ventilationSystem == null || !objectHasKeys(ventilationSystem, "MaxAirIntake")){
             throw new ConfigParserException("Ventilation Object");
         } else {
             String s = (String) ventilationSystem.get("MaxAirIntake");
             VentMaxAirIntake = Double.parseDouble(s);
-            s = (String) ventilationSystem.get("MaxAirOutake");
-            VentMaxAirOutake = Double.parseDouble(s);
-            s = (String) ventilationSystem.get("CostPerTemperatureChange");
-            VentCostPerTemperatureChange = Double.parseDouble(s);
-            s = (String) ventilationSystem.get("CostPerHumidityChange");
-            VentCostPerHumidityChange = Double.parseDouble(s);
-            s = (String) ventilationSystem.get("CostPerQualityChange");
-            VentCostPerQualityChange = Double.parseDouble(s);
+        }
 
-            if(printStats) {
-                System.out.println("Ventilation Max Intake is " + VentMaxAirIntake + " meters cubed per second.");
-                System.out.println("Ventilation Max Outake is " + VentMaxAirOutake + " meters cubed per second.");
-                System.out.println("Ventilation Cost per temperature change is " + VentCostPerTemperatureChange + " watts.");
-                System.out.println("Ventilation Cost per humidity change is " + VentCostPerHumidityChange + " watts.");
-                System.out.println("Ventilation Cost per quality change is " + VentCostPerQualityChange + " watts.");
-            }
+        /*
+         * Humidifier
+         */
+        if(humidifier == null || !objectHasKeys(humidifier, "LitresAddedPerDay", "Power")){
+            throw new ConfigParserException("Humidifier Object");
+        } else {
+            humidifierLitresAddedPerDay = Double.parseDouble((String) humidifier.get("LitresAddedPerDay"));
+            humidifierPower = Double.parseDouble((String) humidifier.get("Power"));
+        }
+
+        /*
+         * Heater
+         */
+        if(heater == null || !objectHasKeys(heater, "Power")){
+            throw new ConfigParserException("Heater");
+        } else {
+            String s = (String) heater.get("Power");
+            heaterPower = Double.parseDouble(s);
+        }
+
+        /*
+         * Cooler
+         */
+        if(cooler == null || !objectHasKeys(cooler, "Power")){
+            throw new ConfigParserException("Cooler");
+        } else {
+            String s = (String) cooler.get("Power");
+            coolerPower = Double.parseDouble(s);
         }
 
         if(!configObject.containsKey("ElectricityCostPerKilowatt")){
@@ -172,7 +177,7 @@ public class ConfigParser {
         } else {
             ElectricityCostPerKilowatt = Double.parseDouble((String) configObject.get("ElectricityCostPerKilowatt"));
             if(printStats)
-            System.out.println("Electricity Cost is " + ElectricityCostPerKilowatt + " euros per kilowatt.");
+            System.out.println("Electricity Cost is " + getElectricityCostPerKilowatt() + " euros per kilowatt.");
         }
 
         if(!configObject.containsKey("DataStartDateAndTime")){
@@ -195,8 +200,6 @@ public class ConfigParser {
         return true;
     }
 
-    //************************** CONFIG GETTERS ************************/
-
     public double getElectricityCostPerKilowatt() {
         if(!isParsed){
             throw new NullPointerException("Config Parameters not yet set");
@@ -204,74 +207,54 @@ public class ConfigParser {
         return ElectricityCostPerKilowatt;
     }
 
-    public double getDCVTemperatureThresholdHigh() {
+    public double getVOCThreshold() {
         if(!isParsed){
             throw new NullPointerException("Config Parameters not yet set");
         }
-        return DCVTemperatureThresholdHigh;
+        return VOCThreshold;
     }
 
-    public double getDCVTemperatureThresholdLow() {
+    public double getCarbonMonoxideThreshold() {
         if(!isParsed){
             throw new NullPointerException("Config Parameters not yet set");
         }
-        return DCVTemperatureThresholdLow;
+        return CarbonMonoxideThreshold;
     }
 
-    public double getDCVHumidityThresholdHigh() {
+    public double getCarbonDioxideThreshold() {
         if(!isParsed){
             throw new NullPointerException("Config Parameters not yet set");
         }
-        return DCVHumidityThresholdHigh;
+        return CarbonDioxideThreshold;
     }
 
-    public double getDCVHumidityThresholdLow() {
+
+    public double getTemperatureThresholdHigh() {
         if(!isParsed){
             throw new NullPointerException("Config Parameters not yet set");
         }
-        return DCVHumidityThresholdLow;
+        return TemperatureThresholdHigh;
     }
 
-    public double getDCVAirQualityThresholdLow() {
+    public double getTemperatureThresholdLow() {
         if(!isParsed){
             throw new NullPointerException("Config Parameters not yet set");
         }
-        return DCVAirQualityThresholdLow;
+        return TemperatureThresholdLow;
     }
 
-    public double getSCVTemperatureThresholdHigh() {
+    public double getHumidityThresholdHigh() {
         if(!isParsed){
             throw new NullPointerException("Config Parameters not yet set");
         }
-        return SCVTemperatureThresholdHigh;
+        return HumidityThresholdHigh;
     }
 
-    public double getSCVTemperatureThresholdLow() {
+    public double getHumidityThresholdLow() {
         if(!isParsed){
             throw new NullPointerException("Config Parameters not yet set");
         }
-        return SCVTemperatureThresholdLow;
-    }
-
-    public double getSCVHumidityThresholdHigh() {
-        if(!isParsed){
-            throw new NullPointerException("Config Parameters not yet set");
-        }
-        return SCVHumidityThresholdHigh;
-    }
-
-    public double getSCVHumidityThresholdLow() {
-        if(!isParsed){
-            throw new NullPointerException("Config Parameters not yet set");
-        }
-        return SCVHumidityThresholdLow;
-    }
-
-    public double getSCVAirQualityThresholdLow() {
-        if(!isParsed){
-            throw new NullPointerException("Config Parameters not yet set");
-        }
-        return SCVAirQualityThresholdLow;
+        return HumidityThresholdLow;
     }
 
     public double getVentMaxAirIntake() {
@@ -279,34 +262,6 @@ public class ConfigParser {
             throw new NullPointerException("Config Parameters not yet set");
         }
         return VentMaxAirIntake;
-    }
-
-    public double getVentMaxAirOutake() {
-        if(!isParsed){
-            throw new NullPointerException("Config Parameters not yet set");
-        }
-        return VentMaxAirOutake;
-    }
-
-    public double getVentCostPerTemperatureChange() {
-        if(!isParsed){
-            throw new NullPointerException("Config Parameters not yet set");
-        }
-        return VentCostPerTemperatureChange;
-    }
-
-    public double getVentCostPerHumidityChange() {
-        if(!isParsed){
-            throw new NullPointerException("Config Parameters not yet set");
-        }
-        return VentCostPerHumidityChange;
-    }
-
-    public double getVentCostPerQualityChange() {
-        if(!isParsed){
-            throw new NullPointerException("Config Parameters not yet set");
-        }
-        return VentCostPerQualityChange;
     }
 
     public double getBuildingUValue() {
@@ -323,13 +278,6 @@ public class ConfigParser {
         return BuildingAirVolume;
     }
 
-    public LocalDateTime getStartDateTime() {
-        if(!isParsed){
-            throw new NullPointerException("Config Parameters not yet set");
-        }
-        return startDateTime;
-    }
-
     public double getBuildingTemperature() {
         if(!isParsed){
             throw new NullPointerException("Config Parameters not yet set");
@@ -337,10 +285,53 @@ public class ConfigParser {
         return BuildingTemperature;
     }
 
-    public double getBuildingHumidityRatio() {
+    public double getBuildingRelativeHumidity() {
         if(!isParsed){
             throw new NullPointerException("Config Parameters not yet set");
         }
-        return BuildingHumidityRatio;
+        return BuildingRelativeHumidity;
     }
+
+    public double getDehumidifierLitresRemovedPerDay() {
+        if(!isParsed){
+            throw new NullPointerException("Config Parameters not yet set");
+        }
+        return dehumidifierLitresRemovedPerDay;
+    }
+
+    public double getDehumidifierPower() {
+        if(!isParsed){
+            throw new NullPointerException("Config Parameters not yet set");
+        }
+        return dehumidifierPower;
+    }
+
+    public double getHumidifierLitresAddedPerDay() {
+        if(!isParsed){
+            throw new NullPointerException("Config Parameters not yet set");
+        }
+        return humidifierLitresAddedPerDay;
+    }
+
+    public double getHumidifierPower() {
+        if(!isParsed){
+            throw new NullPointerException("Config Parameters not yet set");
+        }
+        return humidifierPower;
+    }
+
+    public double getHeaterPower() {
+        if(!isParsed){
+            throw new NullPointerException("Config Parameters not yet set");
+        }
+        return heaterPower;
+    }
+
+    public double getCoolerPower() {
+        if(!isParsed){
+            throw new NullPointerException("Config Parameters not yet set");
+        }
+        return coolerPower;
+    }
+
 }
