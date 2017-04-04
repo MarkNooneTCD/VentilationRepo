@@ -1,3 +1,5 @@
+import metrics.Results;
+
 public abstract class VentilationSystem{
 
     //numerical values
@@ -27,10 +29,10 @@ public abstract class VentilationSystem{
     //Constructor
     public VentilationSystem(Builder b){
         results = new Results();
-        results.lowestTemperatureReached = b.building.getAir().getTemperature().celsius();
-        results.highestTemperatureReached = b.building.getAir().getTemperature().celsius();
-        results.lowestRelativeHumidityLevel = b.building.getAir().getRelativeHumidity();
-        results.highestRelativeHumidityLevel = b.building.getAir().getRelativeHumidity();
+        results.setLowestTemperatureReached(b.building.getAir().getTemperature().celsius());
+        results.setHighestTemperatureReached(b.building.getAir().getTemperature().celsius());
+        results.setLowestRelativeHumidityLevel(b.building.getAir().getRelativeHumidity());
+        results.setHighestRelativeHumidityLevel(b.building.getAir().getRelativeHumidity());
 
         this.volumeInput= b.volumeInput;
         this.outside = b.outside;
@@ -49,34 +51,34 @@ public abstract class VentilationSystem{
     public void resultsUpdate(){
         Air i = building.getAir();
         if(building.getVocPpm() > vocThreshold){
-            results.timeSpentAboveVOCThreshold += 1;
+            results.setTimeSpentAboveVOCThreshold(results.getTimeSpentAboveVOCThreshold() + 1);
         }
         if(building.getCarbonMonoxidePpm() > carbonMonoxideThreshold){
-            results.timeSpentAboveCOThreshold += 1;
+            results.setTimeSpentAboveCOThreshold(results.getTimeSpentAboveCOThreshold() + 1);
         }
         if(building.getCarbonDioxidePpm() > carbonDioxideThreshold){
-            results.timeSpentAboveCO2Threshold += 1;
+            results.setTimeSpentAboveCO2Threshold(results.getTimeSpentAboveCO2Threshold() +1);
         }
-        if(i.getTemperature().celsius() > results.highestTemperatureReached){
-            results.highestTemperatureReached = i.getTemperature().celsius();
+        if(i.getTemperature().celsius() > results.getHighestTemperatureReached()){
+            results.setHighestTemperatureReached(i.getTemperature().celsius());
         }
-        if(i.getTemperature().celsius() < results.lowestTemperatureReached){
-            results.lowestTemperatureReached = i.getTemperature().celsius();
+        if(i.getTemperature().celsius() < results.getLowestTemperatureReached()){
+            results.setLowestTemperatureReached(i.getTemperature().celsius());
         }
-        if(building.getVocPpm() > results.highestVOCLevel){
-            results.highestVOCLevel = building.getVocPpm();
+        if(building.getVocPpm() > results.getHighestVOCLevel()){
+            results.setHighestVOCLevel(building.getVocPpm());
         }
-        if(building.getCarbonDioxidePpm() > results.highestCO2Level){
-            results.highestCO2Level = building.getCarbonDioxidePpm();
+        if(building.getCarbonDioxidePpm() > results.getHighestCO2Level()){
+            results.setHighestCO2Level(building.getCarbonDioxidePpm());
         }
-        if(building.getCarbonMonoxidePpm() > results.highestCOLevel){
-            results.highestCOLevel = building.getCarbonMonoxidePpm();
+        if(building.getCarbonMonoxidePpm() > results.getHighestCOLevel()){
+            results.setHighestCOLevel(building.getCarbonMonoxidePpm());
         }
-        if(i.getRelativeHumidity() < results.lowestRelativeHumidityLevel){
-            results.lowestRelativeHumidityLevel = i.getRelativeHumidity();
+        if(i.getRelativeHumidity() < results.getLowestRelativeHumidityLevel()){
+            results.setLowestRelativeHumidityLevel(i.getRelativeHumidity());
         }
-        if(i.getRelativeHumidity() > results.highestRelativeHumidityLevel){
-            results.highestRelativeHumidityLevel = i.getRelativeHumidity();
+        if(i.getRelativeHumidity() > results.getHighestRelativeHumidityLevel()){
+            results.setHighestRelativeHumidityLevel(i.getRelativeHumidity());
         }
     }
 

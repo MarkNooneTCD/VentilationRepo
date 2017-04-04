@@ -7,16 +7,16 @@ public class Simulation {
     public static final String ENVIRONMENT_CONFIG_FILE_NAME = "data2016.csv";
     public static final String SCENARIO_CONFIG_FILE_NAME = "scenarios.json";
 
-    private static Building dcvBuilding;
-    private static Building scvBuilding;
-    private static Outside outside;
-    private static VentilationSystem dcv;
-    private static VentilationSystem scv;
-    private static EnvironmentParser environmentParser;
-    private static ConfigParser config;
-    private static ScenarioParser scenarioParser;
+    private Building dcvBuilding;
+    private Building scvBuilding;
+    private Outside outside;
+    private VentilationSystem dcv;
+    private VentilationSystem scv;
+    private EnvironmentParser environmentParser;
+    private ConfigParser config;
+    private ScenarioParser scenarioParser;
 
-    public static void main(String args[]){
+    public Simulation(){
 
         //static files
         DataList dataList = new DataList();
