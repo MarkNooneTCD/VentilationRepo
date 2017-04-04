@@ -18,17 +18,19 @@ import javax.swing.text.JTextComponent;
 /**
  * Created by marcus on 04/04/2017.
  */
-public class ScenarioEditor extends JPanel {
+public class ConfigurationEditor extends JPanel {
 
-    public static final int SCENARIO_EDITOR_WIDTH = 400;
-    public static final int SCENARIO_EDITOR_HEIGHT= 200;
-    public ScenarioEditor(String scenarioFilePath){
+    public static final int SCENARIO_EDITOR_WIDTH = 300;
+    public static final int SCENARIO_EDITOR_HEIGHT= 740;
+    public ConfigurationEditor(String configFilePath){
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        this.setSize(new Dimension(SCENARIO_EDITOR_WIDTH, SCENARIO_EDITOR_HEIGHT));
+//        this.setSize(new Dimension(SCENARIO_EDITOR_WIDTH, SCENARIO_EDITOR_HEIGHT));
 
-        final String inputFilePath = scenarioFilePath;
+        final String inputFilePath = configFilePath;
         final JEditorPane edPane = new JEditorPane();
+//        edPane.setSize(new Dimension(SCENARIO_EDITOR_WIDTH, SCENARIO_EDITOR_HEIGHT));
         JScrollPane sPne = new JScrollPane(edPane);
+        sPne.setSize(new Dimension(SCENARIO_EDITOR_WIDTH, SCENARIO_EDITOR_HEIGHT));
         sPne.setVerticalScrollBarPolicy(
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         this.add(sPne);

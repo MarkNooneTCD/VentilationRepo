@@ -15,6 +15,7 @@ public class Simulation {
     private EnvironmentParser environmentParser;
     private ConfigParser config;
     private ScenarioParser scenarioParser;
+    public boolean hasSimulated = false;
 
     public Simulation(){
 
@@ -87,7 +88,23 @@ public class Simulation {
         System.out.println(scv.results.toString());
         //Output results here to buffer
         ResultsWriter resultsWriter = new ResultsWriter();
+        hasSimulated = true;
 
     }
 
+    public Building getDcvBuilding() {
+        return dcvBuilding;
+    }
+
+    public Building getScvBuilding() {
+        return scvBuilding;
+    }
+
+    public VentilationSystem getDcv() {
+        return dcv;
+    }
+
+    public VentilationSystem getScv() {
+        return scv;
+    }
 }

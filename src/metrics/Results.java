@@ -86,6 +86,10 @@ public class Results {
         );
     }
 
+    public void updateResults(Results r){
+        setVolumeOfAirVentedIn(r.getVolumeOfAirVentedIn());
+    }
+
     public double getVolumeOfAirVentedIn() {
         return volumeOfAirVentedIn;
     }
