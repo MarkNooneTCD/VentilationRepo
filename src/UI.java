@@ -10,6 +10,9 @@ import java.awt.event.ActionEvent;
 public class UI {
     public static int WINDOW_WIDTH = 1700;
     public static int WINDOW_HEIGHT = 600;
+    public static final String CONFIG_FILE_NAME = "config.json";
+    public static final String ENVIRONMENT_CONFIG_FILE_NAME = "data2016.csv";
+    public static final String SCENARIO_CONFIG_FILE_NAME = "scenarios.json";
 
     public static void main(String args[]){
         final Results r1 = new Results();
@@ -23,10 +26,10 @@ public class UI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //A panel that allows you to edit and change any configuration options
-        ConfigurationEditor configEditor = new ConfigurationEditor(Simulation.CONFIG_FILE_NAME);
+        ConfigurationEditor configEditor = new ConfigurationEditor(CONFIG_FILE_NAME);
 
         //A panel that allows you to edit and save any scenarios
-        ScenarioEditor scenarioEditor = new ScenarioEditor(Simulation.SCENARIO_CONFIG_FILE_NAME);
+        ScenarioEditor scenarioEditor = new ScenarioEditor(SCENARIO_CONFIG_FILE_NAME);
 
         //A panel that will act as the clients requested command prompt
         SimulationCommandPrompt commandPrompt = new SimulationCommandPrompt();
@@ -45,7 +48,7 @@ public class UI {
 
             @Override
             public void actionPerformed(ActionEvent event) {
-                Simulation sim = new Simulation();
+                Simulation sim = new Simulation(CONFIG_FILE_NAME, ENVIRONMENT_CONFIG_FILE_NAME, SCENARIO_CONFIG_FILE_NAME);
                 while(sim.hasSimulated != true){
                 }
                 resultsPanel.updateTable(sim.getDcv().results, sim.getScv().results);

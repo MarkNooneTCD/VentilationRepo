@@ -112,8 +112,8 @@ Temperature
 	highest : 25.781652 (Celcius)
 	Time outside Threshold : 237325.000000 (minutes)
 Relative Humidity
-	lowest : 0.397711 (Celcius)
-	highest : 0.662029 (Celcius)
+	lowest : 0.397711 (Percent)
+	highest : 0.662029 (Percent)
 	Time Outside Threshold : 243941.000000 (minutes)
 Heating
 	Energy Used : 111057000.000000 (Joules)

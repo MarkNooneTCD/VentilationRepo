@@ -3,9 +3,9 @@ import metrics.Temperature;
 public class Simulation {
 
 
-    public static final String CONFIG_FILE_NAME = "config.json";
-    public static final String ENVIRONMENT_CONFIG_FILE_NAME = "data2016.csv";
-    public static final String SCENARIO_CONFIG_FILE_NAME = "scenarios.json";
+    public final String configFilePath;
+    public final String environmentConfigFilePath;
+    public final String scenarioConfigFilePath;
 
     private Building dcvBuilding;
     private Building scvBuilding;
@@ -17,13 +17,17 @@ public class Simulation {
     private ScenarioParser scenarioParser;
     public boolean hasSimulated = false;
 
-    public Simulation(){
+    public Simulation(String configFilePath, String environmentConfigFilePath, String scenarioConfigFilePath){
+
+        this.configFilePath = configFilePath;
+        this.environmentConfigFilePath = environmentConfigFilePath;
+        this.scenarioConfigFilePath = scenarioConfigFilePath;
 
         //static files
         DataList dataList = new DataList();
-        config = new ConfigParser(CONFIG_FILE_NAME, false);
-        environmentParser = new EnvironmentParser(ENVIRONMENT_CONFIG_FILE_NAME, dataList, false);
-        scenarioParser = new ScenarioParser(SCENARIO_CONFIG_FILE_NAME, dataList);
+        config = new ConfigParser(configFilePath, false);
+        environmentParser = new EnvironmentParser(environmentConfigFilePath, dataList, false);
+        scenarioParser = new ScenarioParser(scenarioConfigFilePath, dataList);
 
         //Setup the building
         Temperature internalTemperature = new Temperature(config.getBuildingTemperature(), Temperature.Unit.CELSIUS);
