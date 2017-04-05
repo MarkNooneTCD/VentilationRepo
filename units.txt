@@ -1,0 +1,147 @@
+=========================================
+SCENARIO
+=========================================
+
+N.B  Volume of pollutants release is considered to be 0.01m^3
+     Rate is [amount] per minute
+[
+
+    {"source": "Kettle",
+        "events" : [
+            {"target" : "Water Vapour" , "time":"15:38-15:41", "rate":".800"}  (PPM/minute)
+        ]
+    },
+
+    {"source": "Cooker",
+        "events" : [
+            {"target" : "Water Vapour", "time":"19:15-19:45", "rate":".47"} (PPM/minute)
+        ]
+    },
+
+    { "source": "Person" ,
+        "events" : [
+            {"target": "Temperature" ,"time" : "9:00-23:30", "rate" : "6000"}   (J/minute),
+            {"target": "Carbon Monoxide" ,"time" : "15:38-06:40","rate" : "10"}, (PPM/minute)
+            {"target": "Water Vapour", "time": "9:00-23:30", "rate" : "0.25"}
+        ]
+    },
+
+    {"source": "Shower",
+        "events" : [
+            {"target": "Water Vapour","time":"09:06-9:30", "rate":".65"}
+        ]
+    },
+
+    {"source": "Heater",
+        "events" : [
+            {"target": "Carbon Dioxide" ,"time":"19:30-21:00", "rate":"3"}
+        ]
+    },
+
+    { "source": "Clothes Dryer",
+        "events" : [
+            {"target": "Carbon Monoxide","time":"15:38 - 16:40", "rate":"2"}
+        ]
+    },
+
+    {"source": "Water Heater",
+        "events" : [
+            {"target": "Carbon Monoxide" ,"time":"12:00-16:00", "rate":"6"}
+        ]
+    },
+
+    { "source": "Fireplace",
+        "events" : [
+            {"target": "Carbon Monoxide","time":"19:30-23:30", "rate":"9"}
+        ]
+    },
+
+    {"source": "Collective",
+        "events" : [
+            {"target" : "VOC" , "time":"15:38 - 16:40", "rate":"0.4"} (PPM/Minute)
+        ]
+    }
+
+
+====================================================
+CONFIG
+====================================================
+
+{    
+	"DataStartDateAndTime":"01-jan-1987 00:00",
+	"Thresholds":{
+			"CarbonMonoxideThreshold":"9",    (ppm)
+			"CarbonDioxideThreshold":"5000",  (ppm)
+			"VOCThreshold":"1",                 (ppm)
+			"HumidityHigh":".6",           (relative humidity %)
+			"HumidityLow":".4",             (relative humidity %)
+			"TemperatureHigh":"30",         (Celcius)
+			"TemperatureLow":"20"           (Celcius)
+	},
+	"VentilationSystem":{
+		"MaxAirIntake":"1"                  (m^3)
+	},
+	"Dehumidifier":{
+		"LitresRemovedPerDay":"10",         (Litres)
+		"Power":"100"                       (Watts)
+	},
+	"Humidifier":{
+		"LitresAddedPerDay":"3",            (Litres)
+		"Power":"100"                       (Watts)
+	},
+	"Heater":{
+		"Power":"300"                       (Watts)
+	},
+	"Cooler":{
+		"Power":"300"                       (Watts)
+	},
+	"Building": {
+		"Temperature":"22",                 (Celcius)
+		"RelativeHumidity":".5",            (relative humidity %)
+		"U-Value":"0.9",                    (W/m^2/K)
+		"AirVolume":"30"                    (m^3)
+	}
+}
+
+====================================
+RESULTS
+====================================
+
+Temperature
+	lowest : 6.476397 (Celcius)
+	highest : 25.781652 (Celcius)
+	Time outside Threshold : 237325.000000 (minutes)
+Relative Humidity
+	lowest : 0.397711 (Celcius)
+	highest : 0.662029 (Celcius)
+	Time Outside Threshold : 243941.000000 (minutes)
+Heating
+	Energy Used : 111057000.000000 (Joules)
+	Run time : 370190.000000 (minutes)
+Cooling
+	Energy Used : 0.000000 (Joules)
+	Run time : 0.000000 (minutes)
+Dehumidifier
+	Energy Used : 1460988000.000000 (Joules)
+	Run time : 243498.000000 (minutes)
+	Water removed : 1690958.333342 (ml)
+Humidifier
+	Energy Used : 72000.000000 (Joules)
+	Run time : 12.000000 (minutes)
+	Water added : 25.000000 (ml)
+Pollutants
+	CO2
+		highest : 0.000349 (ppm)
+		time above threshold : 0.000000 (minutes)
+		amount vented : 0.000109 (ppm)
+	CO
+		highest : 0.005318 (ppm)
+		time above threshold : 0.000000 (minutes)
+		amount vented : 0.001774 (ppm)
+	VOC
+		highest : 0.000092
+		time above threshold : 0.000000
+		amount vented : 0.000028
+Total Energy Used : 1572045000.000000 (Joules)
+Volume Vented In : 6682.000000 (m^3)
+
