@@ -17,7 +17,7 @@ import java.awt.*;
  * Created by marcus on 04/04/2017.
  */
 public class ResultsPanel extends JPanel{
-    String[] headings = {"Result", "Value (DCV)", "Value (SCV)"};
+    String[] headings = {"Result", "Value (DCV)", "Value (SCV)", "Unit"};
     Results resultsDCV, resultsSCV;
     Object[][] data;
     JTable table;
@@ -30,8 +30,9 @@ public class ResultsPanel extends JPanel{
 //        table.setPreferredScrollableViewportSize(new Dimension(500, 70));
         table.setFillsViewportHeight(true);
         table.getColumnModel().getColumn(0).setPreferredWidth(250);
-        table.getColumnModel().getColumn(1).setPreferredWidth(150);
-        table.getColumnModel().getColumn(2).setPreferredWidth(150);
+        table.getColumnModel().getColumn(1).setPreferredWidth(140);
+        table.getColumnModel().getColumn(2).setPreferredWidth(140);
+        table.getColumnModel().getColumn(3).setPreferredWidth(50);
         this.table = table;
         this.add(table);
         this.data = data;

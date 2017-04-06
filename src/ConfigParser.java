@@ -8,6 +8,10 @@ import java.time.LocalDateTime;
 
 public class ConfigParser {
 
+    // Below are the values for the parsed configuration document.
+    // These are accessible from the entire simulation through the
+    // getter methods below.
+
     private double ElectricityCostPerKilowatt;
     private double VOCThreshold;
     private double CarbonMonoxideThreshold;
@@ -59,12 +63,16 @@ public class ConfigParser {
 
     // This will set up all configuration information within the parser object.
     // The programmer can then reference the parser for the most up to date
-    // information regarding configuration. EXAMPLE: configParser.BuildingVolume
-    // will hold the volume of the building, same for configParser.SCVHumidity etc..
+    // information regarding configuration. EXAMPLE: configParser.getBuildingVolume()
+    // will hold the volume of the building, same for configParser.getSCVHumidity() etc..
     // This will hold true to all variable listed in the documentation
 
+    // The parse method below primarily uses two methods from the JSON simple library
+    // These being the containsKey boolean function which searches for a given key in
+    // the configuration document, and then the get method which returns the value of
+    // the key passed into the arguments
+
     private void parse() throws ConfigParserException {
-        //TODO Make the JSON keys a constant for easier changing.
 
         JSONObject building;
         JSONObject thresholds;

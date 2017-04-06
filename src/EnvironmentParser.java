@@ -62,7 +62,7 @@ public class EnvironmentParser {
         String[] goodLine = l.get(index);
         for(int i=0; i<goodLine.length; i++){
             if(goodLine[i].equals(" ") || goodLine[i].equals("") || goodLine[i] == null){
-                System.out.println("Interpolated");
+                System.out.println("WARNING: Interpolating line");
                 Double x, y;
                 try{
                     x = Double.parseDouble(l.get(index-1)[i]);

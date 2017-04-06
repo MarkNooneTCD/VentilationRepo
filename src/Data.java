@@ -3,6 +3,8 @@ import metrics.Temperature;
 import java.time.*;
 import java.util.ArrayList;
 
+//
+
 public class Data {
     private LocalDateTime dateTime;
     private Temperature temperature;

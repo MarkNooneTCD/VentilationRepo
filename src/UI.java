@@ -49,7 +49,7 @@ public class UI {
             @Override
             public void actionPerformed(ActionEvent event) {
                 Simulation sim = new Simulation(CONFIG_FILE_NAME, ENVIRONMENT_CONFIG_FILE_NAME, SCENARIO_CONFIG_FILE_NAME);
-                while(sim.hasSimulated != true){
+                while(sim.hasSimulated){
                 }
                 resultsPanel.updateTable(sim.getDcv().results, sim.getScv().results);
             }
