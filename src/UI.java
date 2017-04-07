@@ -10,11 +10,24 @@ import java.awt.event.ActionEvent;
 public class UI {
     public static int WINDOW_WIDTH = 1700;
     public static int WINDOW_HEIGHT = 600;
-    public static final String CONFIG_FILE_NAME = "config.json";
-    public static final String ENVIRONMENT_CONFIG_FILE_NAME = "data2016.csv";
-    public static final String SCENARIO_CONFIG_FILE_NAME = "scenarios.json";
+    public static String CONFIG_FILE_NAME;
+    public static String ENVIRONMENT_CONFIG_FILE_NAME;
+    public static String SCENARIO_CONFIG_FILE_NAME;
 
     public static void main(String args[]){
+
+        System.out.println("" + args[0] + args[1] + args[2]);
+
+        if(args.length < 3){
+            CONFIG_FILE_NAME = "config.json";
+            ENVIRONMENT_CONFIG_FILE_NAME = "environment.csv";
+            SCENARIO_CONFIG_FILE_NAME = "scenarios.json";
+        } else {
+            CONFIG_FILE_NAME = args[0];
+            ENVIRONMENT_CONFIG_FILE_NAME = args[1];
+            SCENARIO_CONFIG_FILE_NAME = args[2];
+        }
+
         final Results r1 = new Results();
         final Results r2 = new Results();
 
