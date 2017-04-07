@@ -2,18 +2,24 @@ import metrics.Temperature;
 
 public class Building{
 
+    //For ppm calcs, a volume is needed for pollutants
     public static double PSEUDO_PPM_VOLUME = 0.01;
 
     private Air air;
     private double volume;
     private double uvalue;
     private double exposedBuilding = 5;
-    private double eneryLossToInsulation = 0;
 
     private double carbonMonoxidePpm = 0;
     private double carbonDioxidePpm = 0;
     private double vocPpm = 0;
 
+    /**
+     * @param volume volume of the building
+     * @param temperature temperature of the building
+     * @param relativeHumidity relative humidity of the building as % (0 -1)
+     * @param uvalue the u-value of the building
+     */
     public Building(double volume, Temperature temperature, double relativeHumidity, double uvalue){
         this.air = new Air(temperature, relativeHumidity, volume);
         this.volume = volume;
@@ -54,15 +60,15 @@ public class Building{
         return vocPpm;
     }
 
-
+    //Update the building by a minute
     public void update(Data currentData) {
-        //heat loss due to convection
+
+        //energy lost to heat transfer through the building
         double energyLost = 60 * uvalue* exposedBuilding
                 * Math.abs(Outside.getTemperature().celsius() - air.getTemperature().celsius());
-        double newTemp = air.getTemperature().celsius() - energyLost/1000.0/air.getMassOfAir() * 1.01;
 
-        eneryLossToInsulation += energyLost;
-        air.setTemperature(newTemp);
+        //The resultant temp after the heat loss
+        handleTemperatureChange(energyLost);
 
 
         for(Event event : currentData.getEvents()){

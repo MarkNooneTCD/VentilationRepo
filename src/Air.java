@@ -5,6 +5,7 @@ import metrics.*;
  */
 public class Air {
 
+    //Constants needed for air saturation pressure calculations
     private static final double C1 = -5.6745354 * Math.pow(10,3);
     private static final double C2 = 6.3425247;
     private static final double C3 = -9.6778430 * Math.pow(10,-3);
@@ -18,23 +19,20 @@ public class Air {
     private static final double C11 = 4.1764768 * Math.pow(10, -5);
     private static final double C12= -1.4452093 * Math.pow(10, -8);
     private static final double C13 = 6.5459673;
-
-
-    private static final double MOLAR_MASS_DRY_AIR = 0.028964;
     private static final double SPECIFIC_GAS_DRY_AIR = 287.058;
 
-    private static final double MOLAR_MASS_WATER_VAPOUR = 0.018016;
-    private static final double SPECIFIC_GAS_WATER_VAPOUR = 461.495;
+    //The air pressure that is assumed throughout all calcs
+    private static final double ATMOSPHERIC_PRESSURE = Pressure.STANDARD_ATMOSPHERIC_PRESSURE;
 
-    private static final double UNIVERSAL_GAS_CONSTANT = 8.314;
-
-    public static final double ATMOSPHERIC_PRESSURE = Pressure.STANDARD_ATMOSPHERIC_PRESSURE;
-    //Must be set by constructor
     private Temperature temperature;
     private double volume;
     private double relativeHumidity;
 
-
+    /**
+     * @param temperature temperature of the air
+     * @param relativeHumidity the relativity humidity in % (0 - 1)
+     * @param volume the volume of air being considered
+     */
     public Air(Temperature temperature, double relativeHumidity, double volume){
         this.temperature = temperature;
         this.volume = volume;
@@ -65,19 +63,23 @@ public class Air {
         return  relativeHumidity;
     }
 
+    //Returns the humidity ratio , the ratio of the mass of water vapour to the mass of dry air
     public double getHumidityRatio(){
         double vapourPressure = relativeHumidity*getSaturationPressure(temperature).pa();
         return (0.62198*vapourPressure)/ (ATMOSPHERIC_PRESSURE - vapourPressure);
     }
 
+    //A measure of the enthalpy in the air (how much energy is essentially in this system of air)
     public double getEnthalpy(){
         return 1.006*temperature.celsius() + getHumidityRatio() * (1.006*temperature.celsius() + 2501);
     }
 
+    //Returns the specific volume of the air
     public double getSpecificVolume(){
         return (temperature.kelvin() * SPECIFIC_GAS_DRY_AIR * (1 + 1.6078 * getHumidityRatio()) ) / ATMOSPHERIC_PRESSURE;
     }
 
+    //Gets the saturation pressure of air at a given temperature as approximated by the formula
     public static Pressure getSaturationPressure(Temperature temp){
         double t = temp.kelvin();
         double val;
@@ -92,27 +94,30 @@ public class Air {
         return new Pressure(val, Pressure.Unit.PA);
     }
 
+    //Returns the amount of pressure the water vapour in the air is exerting
     public double getWaterVapourPressure(){
-//        return ATMOSPHERIC_PRESSURE * getHumidityRatio() / (0.622 + getHumidityRatio());
         return relativeHumidity * getSaturationPressure(temperature).pa();
     }
 
+    //Returns the density of water vapour in the air
     public double getWaterVapourDensity(){
         return 0.0022*getWaterVapourPressure() / temperature.kelvin();
     }
 
+    //Returns the total density of the air
     public double getAirDensity(){
         double top = (ATMOSPHERIC_PRESSURE-getWaterVapourPressure())*0.028964 + getWaterVapourPressure()*0.018016;
         double bot = 8.314 * temperature.kelvin();
         return top/bot;
     }
 
+    //Returns the mass of the air
     public double getMassOfAir(){
         return getAirDensity()*volume;
     }
 
 
-
+    //Mixes two sets of air and returns the resultant air
     public Air mix(Air other){
         double h1 = this.getEnthalpy();
         double h2 = other.getEnthalpy();
