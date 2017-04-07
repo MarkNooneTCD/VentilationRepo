@@ -1,7 +1,12 @@
 package metrics;
 
+/*
+ Works by storing all temperature objects in SI_UNIT form and
+ converting to the necessary unit as needed
+ */
 public class Temperature {
 
+    //The units available to use
     public enum Unit{
         KELVIN,CELSIUS, FAHRENHEIT
     }
@@ -10,6 +15,11 @@ public class Temperature {
 
     private double value;
 
+    /**
+     * Create a temperature object
+     * @param value the value to use
+     * @param unit the unit the value is in
+     */
     public Temperature(double value, Unit unit){
         this.value = asSIunit(value, unit);
     }
@@ -26,10 +36,12 @@ public class Temperature {
         return asSpecifiedunit(this.value, Unit.FAHRENHEIT);
     }
 
+    //converts value from one unit to another
     public static double convert(double value, Unit from ,Unit to){
         return asSpecifiedunit(asSIunit(value,from), to);
     }
 
+    //converts a value and its Unit to its value at SI
     private static double asSIunit(double value, Unit unit){
         switch (unit){
             case KELVIN: return value;
@@ -39,6 +51,7 @@ public class Temperature {
         throw new IllegalArgumentException("Invalid unit type for Temperature");
     }
 
+    //Returns a value at SI to a specified unit
     private static double asSpecifiedunit(double value,Unit unit){
         switch (unit){
             case KELVIN: return value;

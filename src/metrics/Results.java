@@ -1,5 +1,7 @@
 package metrics;
 
+//A results class with only simple getters and setters
+//used to store the results of a simulation
 public class Results {
 
     public double volumeOfAirVentedIn = 0;

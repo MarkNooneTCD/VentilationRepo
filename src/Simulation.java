@@ -91,7 +91,6 @@ public class Simulation {
         System.out.println(dcv.results.toString());
         System.out.println(scv.results.toString());
         //Output results here to buffer
-        ResultsWriter resultsWriter = new ResultsWriter();
         hasSimulated = true;
 
     }

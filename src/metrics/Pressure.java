@@ -1,7 +1,11 @@
 package metrics;
-
+/*
+ Works by storing all pressure objects in SI_UNIT form and
+ converting to the necessary unit as needed
+ */
 public class Pressure {
 
+    //Pressure units
     public enum Unit{
         PA, KPA, HPA, MILLI_BAR
     }
@@ -11,6 +15,11 @@ public class Pressure {
 
     private double value;
 
+    /**
+     * Create a Pressure object
+     * @param value the value
+     * @param unit the unit which the value is in
+     */
     public Pressure(double value, Unit unit){
         this.value = asSIunit(value, unit);
     }
@@ -30,10 +39,12 @@ public class Pressure {
     public double milliBar(){ return asSpecifiedUnit(value, Unit.MILLI_BAR);
     }
 
+    //converts value from one unit to another
     public static double convert(double value, Unit from, Unit to){
         return asSpecifiedUnit(asSIunit(value,from), to);
     }
 
+    //converts a value and its Unit to its value at SI
     private static double asSIunit(double value, Unit unit){
         switch (unit){
             case PA: return value;
@@ -44,6 +55,7 @@ public class Pressure {
         throw new IllegalArgumentException("Invalid unit type for Pressure");
     }
 
+    //Returns a value at SI to a specified unit
     private static double asSpecifiedUnit(double value, Unit unit){
         switch (unit){
             case PA: return value;
